@@ -119,7 +119,15 @@ toggleBtn.addEventListener('click', () => {
       setTimeout(() => element.classList.remove("show-note"), 2000);
     }).catch(err => console.error("Lỗi khi copy email:", err));
   };
-
+    // ===== Copy Discord =====
+  window.copyDiscord = function(element) {
+    const discordID = "tienmai334";
+    navigator.clipboard.writeText(discordID).then(() => {
+      element.classList.add("show-note");
+      setTimeout(() => element.classList.remove("show-note"), 2000);
+    }).catch(err => console.error("Lỗi khi copy Discord:", err));
+  };
+  
   // ===== Zoom ảnh =====
   window.zoomImage = function(img) {
     const overlay = document.createElement('div');
