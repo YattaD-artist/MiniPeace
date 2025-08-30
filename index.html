@@ -3,1107 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MiniPeace</title>
-  <link rel="icon" href="favicon.png?v=2" type="image/png">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
-  <link rel="manifest" href="/manifest.json">
+  <title>Punkga Site</title>
   <style>
-    /* RESET & BASE */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: repeating-linear-gradient(90deg, #dbeafe 0 20px, #bfdbfe 20px 40px),
-              repeating-linear-gradient(0deg, #dbeafe 0 20px, #bfdbfe 20px 40px);
-  background-blend-mode: overlay;
-  min-height: 100vh;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  text-align: center;
-  padding: 40px 20px 20px;
-}
-
-.content {
-  position: relative;
-  z-index: 2;
-  background-color: rgba(255, 255, 255, 0.7);
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  max-width: 70vw;
-  min-width: 320px;
-  overflow: hidden;
-}
-/* Đường chỉ */
-.content::before {
-  content: "";
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
-  border-radius: 10px;
-  pointer-events: none;
-  background-image: 
-    repeating-linear-gradient(to right, 
-      transparent 0 5px, #f27b84 5px 25px, transparent 25px 32px),
-    repeating-linear-gradient(to bottom, 
-      transparent 0 5px, #f27b84 5px 25px, transparent 25px 32px),
-    repeating-linear-gradient(to left, 
-      transparent 0 5px, #f27b84 5px 25px, transparent 25px 32px),
-    repeating-linear-gradient(to top, 
-      transparent 0 5px, #f27b84 5px 25px, transparent 25px 32px);
-  background-repeat: no-repeat;
-  background-position: 
-    top left, top right, bottom right, bottom left;
-  background-size: 
-    calc(100% - 25px) 6px,    /* top */
-    6px calc(100% - 25px),    /* right */
-    calc(100% - 25px) 6px,    /* bottom */
-    6px calc(100% - 25px);    /* left */
-  transform: rotateZ(-0.1deg);
-  filter: drop-shadow(0 0 0.7px rgba(0, 0, 0, 0.5));
-}
-
-/* Nút chế độ sáng tối */
-.theme-toggle {
-  position: fixed;
-  top: 10rem;
-  right: 5rem;
-  background: none;
-  border: none;
-  font-size: 3.5rem;
-  cursor: pointer;
-  z-index: 99;
-  color: #fbc944; /* Màu biểu tượng ở chế độ sáng */
-  transition: transform 0.3s ease, color 0.3s ease;
-}
-body.dark-mode .theme-toggle {
-  color: #fffae0;
-}
-.theme-toggle:hover {
-  transform: scale(1.2);
-  color: #ec591e;
-}
-body.dark-mode .theme-toggle:hover {
-  color: #f8c900;
-}
-.theme-hint { /* Gợi ý bên cạnh nút chế độ */
-  font-family: 'Oswald', sans-serif;
-  position: fixed;
-  top: 10rem;
-  right: calc(5rem + 60px); /* cách nút toggle một đoạn */
-  font-size: 1rem;
-  color: #0c2f4d;
-  opacity: 0.5;
-  background: rgba(255, 255, 255, 0.6);
-  padding: 6px 12px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  z-index: 98;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  white-space: nowrap;
-}
-body.dark-mode .theme-hint {
-  color: #f8c365;
-  background: rgba(15, 23, 42, 0.6);
-}
-.theme-hint.hidden {
-  opacity: 0;/* Ẩn khi cuộn */
-}
-#themeHint {
-  transition: opacity 0.3s ease;
-}
-#themeHint.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-
-/* Lung la lung linh */
-.gold-sparkles {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 1;
-  overflow: hidden;
-  display: none;
-}
-
-#gold-sparkles {
-  display: none;
-}
-
-.sparkle {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  background-color: #f8c365;
-  background-blend-mode: overlay;
-  border-radius: 50%;
-  opacity: 1;
-  animation: floatSparkle linear infinite;
-  filter: blur(1px);
-}
-.sparkle.faint {
-  opacity: 0.7;
-  filter: blur(1.2px) brightness(1.1);
-  transform: scale(0.8);
-}
-
-@keyframes floatSparkle {
-  0%   { transform: translateY(0) translateX(0); opacity: 0.7; }
-  50%  { transform: translateY(-50vh) translateX(10px); }
-  100% { transform: translateY(-100vh) translateX(-10px); opacity: 0; }
-}
-
-h1 {
-  font-size: 2em;
-  color: #0c2f4d;
-  margin-bottom: 0.4em;
-  white-space: nowrap;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateX(50px);
-  animation: slideIn 0.8s ease-out forwards;
-}
-
-h2 {
-  font-size: 1.4em;
-  color: #f27b84;
-  margin-bottom: 1.2em;
-  font-weight: normal;
-  opacity: 0;
-  transform: translateX(-50px);
-  animation: slideIn 0.8s ease-out forwards;
-  animation-delay: 0.3s;
-}
-
-h3 {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #0c2f4d;
-  margin-top: 60px;
-  margin-bottom: 30px;
-  line-height: 1.4;
-  text-align: left;
-  animation: slideIn 0.8s ease-out forwards;
-}
-
-p {
-  font-size: 1em;
-  margin: 0.4em 0;
-}
-
-.icons {
-  margin-top: 1em;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
-  animation: slideIn 0.8s ease-out forwards;
-}
-
-.icons a {
-  color: #0c2f4d;
-  font-size: 2.5em;
-  text-decoration: none;
-  transition: transform 0.2s ease;
-}
-
-.icons a:hover {
-  transform: scale(1.2);
-  color: #f27b84;
-}
-
-.portfolio-label {
-  font-size: 1.5em;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  color: #0c2f4d;
-  letter-spacing: 0.5px;
-}
-/* Tất cả ảnh trong content scale dựa theo flags.webp */
-.content img {
-  max-width: 100%; /* để responsive */
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
-
-.images {
-  transition: margin-top 0.3s ease;
-  margin-top: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
-  flex-wrap: wrap;
-}
-
-.images img {
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  cursor: pointer;
-}
-
-.PunkgaMerch {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: relative;
-  padding-left: 10px;
-}
-
-.PunkgaMerch h3 {
-  margin-top: 60px;
-}
-
-.PunkgaMerch img {
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  cursor: pointer;
-  position: relative;
-  transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-.PunkgaMerch img:nth-of-type(1) {
-  z-index: 5;
-  margin-top: 0;
-}
-
-.PunkgaMerch img:nth-of-type(2) {
-  z-index: 4;
-  margin-top: -240px;
-}
-
-.PunkgaMerch img:nth-of-type(3) {
-  z-index: 3;
-  margin-top: -240px;
-}
-
-.PunkgaMerch img:hover {
-  transform: scale(1.03);
-  filter: brightness(1.05);
-  z-index: 6;
-}
-
-.upz {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: relative;
-  padding-left: 10px;
-}
-
-.upz h3 {
-  margin-top: 60px;
-}
-
-
-.upz-wrapper {
-  position: relative;
-  margin: 0 auto;
-}
-
-.upz-main, .upz-hover {
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  cursor: pointer;
-}
-
-.upz-hover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.4s ease;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.upz-wrapper:hover .upz-hover {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.awards, .music-section {
-  margin-top: 2em;
-  text-align: left;
-}
-
-.award-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  background: rgba(255,255,255,0.6);
-  padding: 10px 15px;
-  border-radius: 8px;
-}
-
-.award-item span {
-  font-weight: 500;
-}
-
-.award-item button {
-  background-color: #0c2f4d;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 1.5em;
-  transition: background-color 0.2s ease;
-}
-
-.award-item button:hover {
-  transform: scale(1.1);  
-  background-color: #f27b84;
-}
-
-.videos {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-iframe {
-  width: 100%;
-  height: 400px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.floating-icons {
-  position: fixed;
-  top: 50%;
-  left: 16px;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  font-size: 32px;
-  z-index: 999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-}
-
-.floating-icons.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.floating-icons a {
-  color: #0c2f4d;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.floating-icons a:hover {
-  transform: scale(1.3);
-  color: #f27b84;
-}
-
-.gmail-icon {
-  position: relative;
-}
-
-.copy-note {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  color: #f8c365;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  white-space: nowrap;
-  margin-top: 4px;
-}
-
-.gmail-icon.show-note .copy-note {
-  opacity: 1;
-}
-
-.comic-viewer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  overflow: hidden;
-}
-
-.comic-blur-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(10px);
-  z-index: 0;
-}
-
-.comic-deck {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-}
-
-.comic-deck img {
-  position: absolute;
-  height: 100%;
-  max-width: 90vw;
-  max-height: 90vh;
-  width: auto;
-  transition: transform 0.5s ease-in-out, filter 0.6s ease-in-out, opacity 0.6s ease-in-out;
-  transition-delay: 0.05s;
-  border-radius: 8px;
-}
-
-.comic-deck img.active {
-  transform: scale(1) translateX(0);
-  filter: brightness(1) contrast(1);
-  z-index: 2;
-}
-
-.comic-deck img.left {
-  transform: scale(0.85) translateX(-696px) rotateY(5deg);
-  filter: brightness(0.6) contrast(0.8);
-  z-index: 1;
-}
-
-.comic-deck img.right {
-  transform: scale(0.85) translateX(696px) rotateY(-5deg);
-  filter: brightness(0.6) contrast(0.8);
-  z-index: 1;
-}
-
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 2em;
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  z-index: 10;
-  transition: transform 0.2s ease;
-}
-
-.close-btn:hover {
-  transform: scale(1.2);
-}
-
-@keyframes slideIn {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* ✅ RESPONSIVE - MOBILE FIRST */
-@media (max-width: 768px) {
-  body {
-    padding: 20px 10px;
-  }
-  
-  .theme-toggle {
-    top: 0.5rem;
-    right: 0.5rem;
-    font-size: 1.25rem;
-  } 
-  #themeHint {
-    display: none !important;
-  }
-
-  .content {
-    padding: 20px;
-    max-width: 75vw;
-  }
-
-  h1 { font-size: 1.2em; }
-  h2 { font-size: 1em; }
-  h3 { font-size: 1.1em; text-align: center; }
-  p { font-size: 0.95em; }
-
-  .icons a { font-size: 1.3em; }
-
-  .images img,
-  .PunkgaMerch img,
-  .upz-main,
-  .upz-hover {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-  }
-
-  .PunkgaMerch img:nth-of-type(2),
-  .PunkgaMerch img:nth-of-type(3) {
-    margin-top: 20px;
-    position: static;
-  }
-
-  iframe {
-    height: 200px;
-  }
-
-  .upz-section h3 {
-    text-align: center;
-  }
-
-  .floating-icons {
-display: flex; /* hoặc block nếu cần */
-    position: fixed;
-    top: 50%;
-    left: 0.5rem;
-font-size: 1.3em; 
-    transform: translateY(-50%);
-    z-index: 1000;
-  }
-
-  .award-item button {
-    font-size: 0.8em;
-    padding: 5px 10px;
-  }
-    .comic-deck img {
-    width: 100%;
-    height: auto;
-    max-width: 90vw;
+    body {
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+      color: #333;
+      margin: 0;
+      padding: 20px;
     }
 
-}
-/* === DARK MODE === */
-/* === DARK MODE === */
-/* === DARK MODE === */
-body.dark-mode {
-background:
-  linear-gradient(to right, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9)), /* nền đêm xanh đậm mờ */
-  repeating-linear-gradient(90deg, #dbeafe 0 20px, #bfdbfe 20px 40px),
-  repeating-linear-gradient(0deg, #dbeafe 0 20px, #bfdbfe 20px 40px);
-background-blend-mode: multiply;
-  color: #e2e8f0; /* màu chữ sáng */
-}
-/* Khi dark-mode: hiển thị lại */
-body.dark-mode #gold-sparkles {
-  display: block;
-}
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-/* content box */
-body.dark-mode .content {
-  background-color: rgba(15, 23, 42, 0.85); /* xanh đen mờ */
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
+    /* Ảnh mặc định giữ tỉ lệ */
+    .content img {
+      max-width: none; /* không ép theo container */
+      height: auto;
+      display: block;
+      margin: 10px auto;
+    }
 
-/* Đường chỉ phát sáng hồng cam */
-body.dark-mode .content::before {
-  background-image: 
-    repeating-linear-gradient(to right, transparent 0 5px, #f8c365 5px 25px, transparent 25px 32px),
-    repeating-linear-gradient(to bottom, transparent 0 5px, #f8c365 5px 25px, transparent 25px 32px),
-    repeating-linear-gradient(to left, transparent 0 5px, #f8c365 5px 25px, transparent 25px 32px),
-    repeating-linear-gradient(to top, transparent 0 5px, #f8c365 5px 25px, transparent 25px 32px);
-  filter: drop-shadow(0 0 0.7px rgba(255, 255, 255, 0.5));
-}
+    /* Zoom ảnh khi click */
+    .zoomed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
 
-/* Heading */
-body.dark-mode h1,
-body.dark-mode h3,
-body.dark-mode .portfolio-label {
-  color: #f8fafc;
-}
+    .zoomed img {
+      max-width: 90%;
+      max-height: 90%;
+    }
 
-body.dark-mode h2 {
-  color: #f8c365;
-}
+    .zoomed-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #fff;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+    }
 
-/* Link icons */
-body.dark-mode .icons a,
-body.dark-mode .floating-icons a {
-  color: #e2e8f0;
-}
+    .PunkgaMerch, .images, .upz-wrapper {
+      text-align: center;
+    }
 
-body.dark-mode .icons a:hover,
-body.dark-mode .floating-icons a:hover {
-  color: #f8c365;
-}
-
-/* Award box */
-body.dark-mode .award-item {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-body.dark-mode .award-item button {
-  background-color: #f8c365;
-  color: #1e293b;
-}
-
-body.dark-mode .award-item button:hover {
-  background-color: #fb923c;
-}
-
-/* Nút toggle đã có màu riêng – không cần sửa lại */
-
-/* Ảnh và hover */
-body.dark-mode .images img,
-body.dark-mode .PunkgaMerch img,
-body.dark-mode .upz-main,
-body.dark-mode .upz-hover {
-  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
-}
-
-/* Gmail note */
-body.dark-mode .copy-note {
-  color: #f8c365;
-}
-
-/* Comic viewer nền */
-body.dark-mode .comic-viewer {
-  background: rgba(0, 0, 0, 0.95);
-}
+    .upz-main, .upz-hover {
+      display: inline-block;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div class="content">
-    <!-- Thêm ID để floating-icons hoạt động -->
-    <p id="portfolio-header" class="portfolio-label"></p>
-
-
+    <!-- Ảnh chuẩn scale -->
     <div class="images">
-<img src="assets/flags.webp" alt="Cờ" loading="lazy" />
-<img src="assets/mini peace .webp" alt="Tên" loading="lazy" />
-<img src="assets/house.webp" alt="Nhà" loading="lazy" />
-<img src="assets/cat.webp" alt="Méo" loading="lazy" />
-<img src="assets/commission.webp" alt="Còm" loading="lazy" />
+      <img src="assets/flags.webp" alt="Cờ chuẩn" />
+      <img src="assets/image02.webp" alt="Artwork Hello" onclick="zoomImage(this)" />
+      <img src="assets/image01.webp" alt="Artwork Intro" onclick="zoomImage(this)" />
     </div>
 
-   <div class="icons">
-  <a href="https://www.facebook.com/minipeace2001" aria-label="Facebook"target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i></a>
-  <a href="https://www.instagram.com/minipeace2001/" aria-label="Instagram"target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
-  <a href="https://www.behance.net/maithuytien" aria-label="Behance"target="_blank" rel="noopener noreferrer"><i class="fab fa-behance"></i></a>
-  <a href="https://www.youtube.com/playlist?list=PLR5fl78Q7K1RJs1C-68pNzut2mKCL2Nod" aria-label="YouTube"target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
-  <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)" aria-label="Gmail"><i class="fab fa-google"></i><span class="copy-note">Đã copy địa chỉ email</span></a>
-  <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)" aria-label="Discord"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
-</div>
-
-    <div class="awards">
-      <h3><strong>GIẢI THƯỞNG VẼ TRUYỆN TRANH</strong></h3>
-      <div class="award-item">
-        <h2><strong>GIẢI NHẤT</strong> "Wow Yourself"</h2>
-        <button id="btn-read-wow">Đọc truyện: <strong>Mặt Trời Trong Đêm</strong></button>
-      </div>
-      <div class="award-item">
-        <h2><strong>GIẢI NHÌ</strong> "Kaia Contest"</h2>
-        <button id="btn-read-kaia">Đọc truyện: <strong>Hồi Ức Âm Thanh</strong></button>
-      </div>
-      <div class="award-item">
-        <h2><strong>TOP 20</strong> "AVA Contest"</h2>
-        <button id="btn-read-ava">Đọc truyện: <strong>Rồi Ngày Mai Sẽ Khác</strong></button>
-      </div>
-    </div>
-
-    <div class="music-section">
-      <div class="videos">
-        <iframe src="https://www.youtube.com/embed/1oUTJ3FpdJ8" allowfullscreen loading="lazy"></iframe>
-        <iframe src="https://www.youtube.com/embed/3_8VEcalmRE" allowfullscreen loading="lazy"></iframe>
-        <iframe src="https://www.youtube.com/embed/PhKgdZEzMxc" allowfullscreen loading="lazy"></iframe>
-        <iframe src="https://www.youtube.com/embed/8ka2w0i97Xc" allowfullscreen loading="lazy"></iframe>
-      </div>
-    </div>
-
+    <!-- Merch -->
     <div class="PunkgaMerch">
+      <img src="assets/PunkgaMerch01.webp" alt="T-Shirt 1" onclick="zoomImage(this)" />
+      <img src="assets/PunkgaMerch02.webp" alt="T-Shirt 2" onclick="zoomImage(this)" />
+      <img src="assets/PunkgaMerch03.webp" alt="T-Shirt 3" onclick="zoomImage(this)" />
     </div>
 
-    <div class="upz-section">
+    <!-- UPz artwork -->
+    <div class="upz-wrapper">
+      <img src="assets/UPz.webp" alt="Artwork chính" class="upz-main" />
+      <img src="assets/UPz1.webp" alt="Artwork phụ" class="upz-hover" onclick="zoomImage(this)" />
     </div>
-  </div> <!-- Kết thúc .content -->
-
-  <!-- Trình xem truyện tranh -->
-  <div id="comicViewer" class="comic-viewer" style="display: none;">
-    <div class="comic-blur-bg"></div>
-    <button class="close-btn" onclick="closeComicGallery()">✕</button>
-    <div class="comic-deck" id="comicDeck"></div>
   </div>
 
-  <!-- Âm thanh -->
-  <audio id="kaia-audio" src="KAYA/ATCL.mp3" loop preload="auto"></audio>
-  <audio id="wow-audio" src="WOW/MTTD.mp3" loop preload="auto"></audio>
-
-  <!-- Icon nổi bên trái (ẩn ban đầu, sẽ hiện khi cuộn) -->
-  <div class="floating-icons">
-  <a href="https://www.facebook.com/minipeace2001" aria-label="Facebook"target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i></a>
-  <a href="https://www.instagram.com/minipeace2001/" aria-label="Instagram"target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
-  <a href="https://www.behance.net/maithuytien" aria-label="Behance"><i class="fab fa-behance"target="_blank" rel="noopener noreferrer"></i></a>
-  <a href="https://www.youtube.com/playlist?list=PLR5fl78Q7K1RJs1C-68pNzut2mKCL2Nod" aria-label="YouTube"target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
-  <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)" aria-label="Gmail"><i class="fab fa-google"></i><span class="copy-note">Đã copy địa chỉ email</span></a>
-  <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)" aria-label="Discord"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
-</div>
-
-  <!-- Script cuối để đảm bảo DOM đã có đầy đủ -->
   <script>
-document.addEventListener("DOMContentLoaded", () => {
-  let comicPages = [];
-  let currentPage = 0;
+    // Zoom ảnh khi click
+    function zoomImage(img) {
+      const zoomed = document.createElement("div");
+      zoomed.classList.add("zoomed");
 
-  // ===== DOM elements =====
-  const viewer = document.getElementById("comicViewer");
-  const deck = document.getElementById("comicDeck");
-  const audio = document.getElementById("kaia-audio");
-  const wowAudio = document.getElementById("wow-audio");
-  const floatingIcons = document.querySelector('.floating-icons');
-  const leftImage = document.querySelector('.side-image.left');
-  const rightImage = document.querySelector('.side-image.right');
-  const mainIcons = document.querySelector(".icons");
-  const wrapper = document.querySelector('.images-wrapper');
-  const toggleBtn = document.getElementById('theme-toggle');
-  const themeIcon = document.getElementById('theme-icon');
-  const hint = document.getElementById('themeHint');
-  const sparklesContainer = document.getElementById("gold-sparkles");
+      const zoomedImg = document.createElement("img");
+      zoomedImg.src = img.src;
 
-  // ===== Theme + Sparkles =====
-  function createSparkles() {
-    if (!sparklesContainer) return;
-    sparklesContainer.innerHTML = '';
-    const sparkleCount = 30;
-    for (let i = 0; i < sparkleCount; i++) {
-      const sparkle = document.createElement("div");
-      sparkle.classList.add("sparkle");
-      if (Math.random() < 0.5) sparkle.classList.add("faint");
-      sparkle.style.left = `${Math.random() * 100}%`;
-      sparkle.style.bottom = `-10px`;
-      sparkle.style.animationDuration = `${10 + Math.random() * 10}s`;
-      sparkle.style.animationDelay = `${Math.random() * 20}s`;
-      const size = 6 + Math.random() * 8;
-      sparkle.style.width = `${size}px`;
-      sparkle.style.height = `${size}px`;
-      sparklesContainer.appendChild(sparkle);
-    }
-  }
+      const closeBtn = document.createElement("button");
+      closeBtn.innerHTML = "&times;";
+      closeBtn.classList.add("zoomed-close");
+      closeBtn.onclick = () => document.body.removeChild(zoomed);
 
-  function setTheme(isDark) {
-    document.body.classList.toggle('dark-mode', isDark);
-    themeIcon.classList.toggle('fa-sun', !isDark);
-    themeIcon.classList.toggle('fa-moon', isDark);
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    if (isDark) {
-      createSparkles();
-    } else if (sparklesContainer) {
-      sparklesContainer.innerHTML = '';
-    }
-  }
-
-  // Initial theme setup
-  if (toggleBtn && themeIcon) {
-    const isDarkMode = localStorage.getItem('theme') === 'dark';
-    setTheme(isDarkMode);
-toggleBtn.addEventListener('click', () => {
-  const isDark = document.body.classList.contains('dark-mode');
-  setTheme(!isDark);
-});
-
-
-    // Hide hint when user interacts
-    toggleBtn.addEventListener('mouseenter', () => hint?.classList.add('hidden'));
-    toggleBtn.addEventListener('touchstart', () => hint?.classList.add('hidden'), { passive: true });
-
-    document.addEventListener('mousemove', (e) => {
-  if (!toggleBtn || !hint || hint.classList.contains('hidden')) return;
-
-  const rect = toggleBtn.getBoundingClientRect();
-  const margin = 80; // phạm vi "gần"
-
-  if (
-    e.clientX > rect.left - margin &&
-    e.clientX < rect.right + margin &&
-    e.clientY > rect.top - margin &&
-    e.clientY < rect.bottom + margin
-  ) {
-    hint.classList.add('hidden');
-  }
-});
-  }
-
-  // ===== Scroll effect =====
-  const maxMargin = window.innerHeight * 1.2;
-  const minMargin = 32;
-  const maxScroll = 300;
-  let lastScrollY = window.scrollY;
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const progress = Math.min(scrollY / maxScroll, 1);
-
-    const mainIconsBottom = mainIcons?.getBoundingClientRect().bottom || 0;
-    const shouldShowFloatingIcons = mainIconsBottom < 0 || scrollY > 300;
-
-    if (shouldShowFloatingIcons) {
-      floatingIcons?.classList.add("visible");
-      leftImage?.classList.add("slide-out-on-icons");
-      rightImage?.classList.add("slide-out-on-icons");
-    } else {
-      floatingIcons?.classList.remove("visible");
-      leftImage?.classList.remove("slide-out-on-icons");
-      rightImage?.classList.remove("slide-out-on-icons");
+      zoomed.appendChild(zoomedImg);
+      zoomed.appendChild(closeBtn);
+      document.body.appendChild(zoomed);
     }
 
-    if (hint && Math.abs(scrollY - lastScrollY) > 10) {
-      hint.classList.add('hidden');
-    }
-    lastScrollY = scrollY;
+    // Auto scale tất cả ảnh theo flags.webp
+    document.addEventListener("DOMContentLoaded", () => {
+      const refImg = document.querySelector("img[src='assets/flags.webp']");
+      if (!refImg) return;
 
-    const newMargin = Math.max(minMargin, maxMargin - scrollY);
-    if (wrapper) wrapper.style.marginTop = `${newMargin}px`;
-  });
+      refImg.onload = () => {
+        const originalWidth = refImg.naturalWidth;
 
-  // ===== Copy email =====
-  window.copyEmail = function(element) {
-    const email = "ttien39169@gmail.com";
-    navigator.clipboard.writeText(email).then(() => {
-      element.classList.add("show-note");
-      setTimeout(() => element.classList.remove("show-note"), 2000);
-    }).catch(err => console.error("Lỗi khi copy email:", err));
-  };
-    // ===== Copy Discord =====
-  window.copyDiscord = function(element) {
-    const discordID = "tienmai334";
-    navigator.clipboard.writeText(discordID).then(() => {
-      element.classList.add("show-note");
-      setTimeout(() => element.classList.remove("show-note"), 2000);
-    }).catch(err => console.error("Lỗi khi copy Discord:", err));
-  };
+        const resizeAll = () => {
+          const currentWidth = refImg.clientWidth;
+          const scale = currentWidth / originalWidth;
 
-  // ===== Lấy flags làm chuẩn ngang =====
-document.addEventListener("DOMContentLoaded", () => {
-  const refImg = new Image();
-  refImg.src = "assets/flags.webp";
-  refImg.onload = () => {
-    const refWidth = refImg.width; // chiều ngang gốc
-    document.querySelectorAll(".content img").forEach(img => {
-      img.style.maxWidth = refWidth + "px";
+          document.querySelectorAll(".content img").forEach(img => {
+            if (img === refImg) return;
+            img.style.transform = `scale(${scale})`;
+            img.style.transformOrigin = "top left";
+            img.style.display = "inline-block";
+          });
+        };
+
+        resizeAll();
+        window.addEventListener("resize", resizeAll);
+      };
     });
-  };
-});
-
-  // ===== Zoom ảnh =====
-  window.zoomImage = function(img) {
-    const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = 0;
-    overlay.style.left = 0;
-    overlay.style.width = '100vw';
-    overlay.style.height = '100vh';
-    overlay.style.background = 'rgba(0, 0, 0, 0.85)';
-    overlay.style.display = 'flex';
-    overlay.style.alignItems = 'center';
-    overlay.style.justifyContent = 'center';
-    overlay.style.cursor = 'zoom-out';
-    overlay.style.zIndex = 9999;
-
-    const zoomedImg = document.createElement('img');
-    zoomedImg.src = img.src;
-    zoomedImg.alt = img.alt;
-    zoomedImg.style.maxWidth = '90vw';
-    zoomedImg.style.maxHeight = '90vh';
-    zoomedImg.style.borderRadius = '12px';
-    zoomedImg.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.5)';
-    zoomedImg.style.transition = 'transform 0.3s ease';
-    zoomedImg.style.transform = 'scale(0.95)';
-    setTimeout(() => zoomedImg.style.transform = 'scale(1)', 10);
-
-    overlay.appendChild(zoomedImg);
-    document.body.appendChild(overlay);
-    overlay.addEventListener('click', () => overlay.remove());
-  };
-
-  // ===== Comic logic =====
-  function renderDeck(direction = null) {
-    const prevImgs = Array.from(deck.querySelectorAll("img"));
-    const outgoing = prevImgs.find(img => img.classList.contains("active"));
-    if (direction && outgoing) {
-      outgoing.classList.remove("active");
-      outgoing.classList.add(direction === "left" ? "slide-out-left" : "slide-out-right");
-    }
-    updateDeck();
-  }
-
-  function updateDeck() {
-    deck.innerHTML = "";
-    comicPages.forEach((src, i) => {
-      if (i < currentPage - 1 || i > currentPage + 1) return;
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = `Page ${i + 1}`;
-      img.className = i === currentPage ? "active" : i === currentPage - 1 ? "left" : "right";
-      deck.appendChild(img);
-    });
-  }
-
-  function openComicGallery() {
-    currentPage = 0;
-    viewer.style.display = "flex";
-    renderDeck();
-  }
-
-  function fadeOutAudio(audioEl) {
-    if (!audioEl || audioEl.paused) return;
-    let vol = audioEl.volume;
-    const fade = setInterval(() => {
-      if (vol > 0.05) {
-        vol -= 0.05;
-        audioEl.volume = vol;
-      } else {
-        clearInterval(fade);
-        audioEl.pause();
-        audioEl.currentTime = 0;
-        audioEl.volume = 1.0;
-      }
-    }, 40);
-  }
-
-  function closeComicGallery() {
-    viewer.style.display = "none";
-    fadeOutAudio(audio);
-    fadeOutAudio(wowAudio);
-  }
-
-  document.querySelector(".close-btn").addEventListener("click", closeComicGallery);
-
-  if (viewer) {
-    viewer.addEventListener("click", handleClick);
-  }
-
-  function handleClick(e) {
-    if (e.target === viewer || e.target.classList.contains('comic-blur-bg')) {
-      closeComicGallery();
-      return;
-    }
-    const x = e.clientX;
-    const half = window.innerWidth / 2;
-    if (x < half && currentPage > 0) {
-      currentPage--;
-      renderDeck("right");
-    } else if (x >= half && currentPage < comicPages.length - 1) {
-      currentPage++;
-      renderDeck("left");
-    }
-  }
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowRight" && currentPage < comicPages.length - 1) {
-      currentPage++;
-      renderDeck("left");
-    } else if (e.key === "ArrowLeft" && currentPage > 0) {
-      currentPage--;
-      renderDeck("right");
-    } else if (e.key === "Escape") {
-      closeComicGallery();
-    }
-  });
-
-  let xDown = null;
-  viewer.addEventListener("touchstart", evt => {
-    xDown = evt.touches[0].clientX;
-  }, false);
-  viewer.addEventListener("touchend", evt => {
-    if (!xDown) return;
-    const xUp = evt.changedTouches[0].clientX;
-    const xDiff = xDown - xUp;
-    if (xDiff > 50 && currentPage < comicPages.length - 1) {
-      currentPage++;
-      renderDeck("left");
-    } else if (xDiff < -50 && currentPage > 0) {
-      currentPage--;
-      renderDeck("right");
-    }
-    xDown = null;
-  }, false);
-
-  // ===== Comic button events =====
-  document.getElementById("btn-read-wow").addEventListener("click", () => {
-    fadeOutAudio(audio);
-    fadeOutAudio(wowAudio);
-    if (wowAudio) {
-      wowAudio.volume = 1.0;
-      wowAudio.play().catch(err => console.warn("WOW audio error:", err));
-    }
-    comicPages = [
-      "WOW/01.webp", "WOW/02.webp", "WOW/03.webp",
-      "WOW/04.webp", "WOW/05.webp", "WOW/06.webp"
-    ];
-    openComicGallery();
-  });
-
-  document.getElementById("btn-read-kaia").addEventListener("click", () => {
-    fadeOutAudio(wowAudio);
-    if (audio) {
-      audio.volume = 1.0;
-      audio.play().catch(err => console.warn("KAIA audio error:", err));
-    }
-    comicPages = [
-      "KAYA/01.webp", "KAYA/02.webp", "KAYA/03.webp",
-      "KAYA/04.webp", "KAYA/05.webp"
-    ];
-    openComicGallery();
-  });
-
-  document.getElementById("btn-read-ava").addEventListener("click", () => {
-    fadeOutAudio(audio);
-    fadeOutAudio(wowAudio);
-    comicPages = [
-      "AVA/01.webp", "AVA/02.webp", "AVA/03.webp", "AVA/04.webp",
-      "AVA/05.webp", "AVA/06.webp", "AVA/07.webp", "AVA/08.webp",
-      "AVA/09.webp", "AVA/10.webp", "AVA/11.webp"
-    ];
-    openComicGallery();
-  });
-
-  // ===== Preload images =====
-  const preloadImages = [
-    "WOW/01.webp", "WOW/02.webp", "WOW/03.webp", "WOW/04.webp", "WOW/05.webp", "WOW/06.webp",
-    "KAYA/01.webp", "KAYA/02.webp", "KAYA/03.webp", "KAYA/04.webp", "KAYA/05.webp",
-    "AVA/01.webp", "AVA/02.webp", "AVA/03.webp", "AVA/04.webp", "AVA/05.webp",
-    "AVA/06.webp", "AVA/07.webp", "AVA/08.webp", "AVA/09.webp", "AVA/10.webp", "AVA/11.webp"
-  ];
-  preloadImages.forEach(src => {
-    const img = new Image();
-    img.src = src;
-  });
-});
-
-// ====== APP =====
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/service-worker.js")
-      .then((registration) => {
-        console.log("Service Worker registered with scope:", registration.scope);
-      })
-      .catch((error) => {
-        console.log("Service Worker registration failed:", error);
-      });
-  });
-}
-</script>
-
+  </script>
 </body>
 </html>
