@@ -28,7 +28,7 @@ body {
 .content {
   position: relative;
   z-index: 2;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 250, 240, 0.7);
   padding: 0;
   margin: 0;
   border-radius: 12px;
@@ -101,10 +101,10 @@ body {
   filter: blur(1.2px) brightness(1.1);
   transform: scale(0.8);
 }
-@keyframes floatSparkle {
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(-50vh); }
-  100% { transform: translateY(-120vh); opacity: 0; }
+@keyframes floatRandom {
+  0%   { transform: translate(0, 0); opacity: 0.8; }
+  50%  { transform: translate(var(--x-move), -50vh); opacity: 1; }
+  100% { transform: translate(calc(var(--x-move) / 2), -120vh); opacity: 0; }
 }
 
 /* Comic viewer */
@@ -230,14 +230,19 @@ body {
 /* Responsive */
 @media (max-width: 768px) {
   body { padding: 20px 10px; }
-  .content { padding: 20px; max-width: 75vw; }
-  .overlay-container { width: 100vw;
-    max-width: 100%; }
-  .overlay-container .layer {
+  .content { max-width: 75vw; }
+   .overlay-container {
     width: 100%;
-    height: auto;
-    object-fit: contain;
+    max-width: 100%;
+    aspect-ratio: 16/9; /* thêm vào nếu muốn giữ tỉ lệ */
   }
+.overlay-container .layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
   .icons-overlay { display: none !important; }
   .floating-icons {
     left: 0.5rem;
@@ -263,7 +268,7 @@ body.dark-mode {
 }
 body.dark-mode #gold-sparkles { display: block; }
 body.dark-mode .content {
-  background-color: rgba(15, 23, 42, 0.85);
+  background-color: rgba(0, 5, 15, 0.35);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 body.dark-mode .content::before {
@@ -289,10 +294,6 @@ body.dark-mode .floating-icons a:hover {
 <body>
 <!--Lung Linh -->
 <div class="gold-sparkles" id="gold-sparkles"></div>
- <!-- Toggle Button -->
-<button id="theme-toggle" class="theme-toggle" aria-label="Chuyển đổi chế độ">
-  <i id="theme-icon" class="fas fa-sun"></i>
-</button>
 
  <!--Tiêu Đề -->
   <div class="content">
@@ -336,6 +337,11 @@ body.dark-mode .floating-icons a:hover {
         <button id="btn-read-ava"><strong>Rồi Ngày Mai Sẽ Khác</strong></button>
       </div>
     </div>
+
+ <!-- Toggle Button -->
+<button id="theme-toggle" class="theme-toggle" aria-label="Chuyển đổi chế độ">
+  <i id="theme-icon" class="fas fa-sun"></i>
+</button>
 
   </div> <!-- Kết thúc .content -->
 
@@ -381,25 +387,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const sparklesContainer = document.getElementById("gold-sparkles");
 
   // ===== Theme + Sparkles =====
-  function createSparkles() {
-    if (!sparklesContainer) return;
-    sparklesContainer.innerHTML = '';
-    const sparkleCount = 30;
-    for (let i = 0; i < sparkleCount; i++) {
-      const sparkle = document.createElement("div");
-      sparkle.classList.add("sparkle");
-      if (Math.random() < 0.5) sparkle.classList.add("faint");
-      sparkle.style.left = `${Math.random() * 100}%`;
-sparkle.style.bottom = `-${20 + Math.random() * 40}px`;
+function createSparkles() {
+  if (!sparklesContainer) return;
+  sparklesContainer.innerHTML = '';
+  const sparkleCount = 30;
+  for (let i = 0; i < sparkleCount; i++) {
+    const sparkle = document.createElement("div");
+    sparkle.classList.add("sparkle");
+    if (Math.random() < 0.5) sparkle.classList.add("faint");
+    sparkle.style.left = `${Math.random() * 100}%`;
+    sparkle.style.bottom = `-${20 + Math.random() * 40}px`;
 
-      sparkle.style.animationDuration = `${10 + Math.random() * 10}s`;
-      sparkle.style.animationDelay = `${Math.random() * 20}s`;
-      const size = 6 + Math.random() * 8;
-      sparkle.style.width = `${size}px`;
-      sparkle.style.height = `${size}px`;
-      sparklesContainer.appendChild(sparkle);
-    }
+    const xMove = `${Math.random() * 60 - 30}vw`; // từ -30vw đến +30vw
+    sparkle.style.setProperty('--x-move', xMove);
+    sparkle.style.animationName = "floatRandom";
+    sparkle.style.animationDuration = `${5 + Math.random() * 10}s`;
+    sparkle.style.animationDelay = `${Math.random() * 5}s`;
+
+    // ✅ scale + xoay random
+    sparkle.style.transform = `scale(${0.5 + Math.random() * 1.5}) rotate(${Math.random() * 360}deg)`;
+
+    const size = 6 + Math.random() * 8;
+    sparkle.style.width = `${size}px`;
+    sparkle.style.height = `${size}px`;
+
+    sparklesContainer.appendChild(sparkle);
   }
+}
+
 
   function setTheme(isDark) {
     document.body.classList.toggle('dark-mode', isDark);
@@ -422,6 +437,7 @@ toggleBtn.addEventListener('click', () => {
   setTheme(!isDark);
 });
   }
+
 
   // ===== Scroll effect =====
 
