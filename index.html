@@ -63,7 +63,6 @@ body {
   position: relative;
   width: 80vw;
   aspect-ratio: 16/9;
-  margin: 0;
   padding: 0;
   overflow: hidden;
 }
@@ -74,6 +73,13 @@ body {
   height: 100%;
   object-fit: contain;
   pointer-events: none;
+}
+.overlay-container.Page2 {
+  position: relative;
+  width: 80vw;
+  aspect-ratio: 16/9;
+margin: 40px;
+
 }
 
 /* Sparkles */
@@ -303,17 +309,17 @@ body.dark-mode .floating-icons a:hover {
 
   <!-- Bộ ảnh Page1 -->
 <div class="overlay-container Page1">
-  <img src="mini-peace.png" alt="Mini Peace" class="layer" style="z-index: 5;">
-  <img src="flags.png" alt="Flags" class="layer" style="z-index: 5;">
-  <img src="bubble.png" alt="Bubble" class="layer" style="z-index: 4;">
-  <img src="mtt.png" alt="MTT" class="layer" style="z-index: 5;">
-  <img src="vase.png" alt="Vase" class="layer" style="z-index: 3;">
-  <img src="plant.png" alt="Plant" class="layer" style="z-index: 3;">
-  <img src="mushroom.png" alt="Mushroom" class="layer" style="z-index: 3;">
-  <img src="cactus.png" alt="Cactus" class="layer" style="z-index: 2;">
-  <img src="commission.png" alt="Commission" class="layer" style="z-index: 4;">
-  <img src="house.png" alt="House" class="layer" style="z-index: 2;">
-  <img src="cat.png" alt="Cat" class="layer" style="z-index: 1;">
+  <img id="miniPeace" src="mini-peace.png" alt="Mini Peace" class="layer" style="z-index: 5;">
+  <img id="flags" src="flags.png" alt="Flags" class="layer" style="z-index: 5;">
+  <img id="bubble" src="bubble.png" alt="Bubble" class="layer" style="z-index: 4;">
+  <img id="mtt" src="mtt.png" alt="MTT" class="layer" style="z-index: 5;">
+  <img id="vase" src="vase.png" alt="Vase" class="layer" style="z-index: 3;">
+  <img id="plant" src="plant.png" alt="Plant" class="layer" style="z-index: 3;">
+  <img id="mushroom" src="mushroom.png" alt="Mushroom" class="layer" style="z-index: 3;">
+  <img id="cactus" src="cactus.png" alt="Cactus" class="layer" style="z-index: 2;">
+  <img id="commission" src="commission.png" alt="Commission" class="layer" style="z-index: 4;">
+  <img id="house" src="house.png" alt="House" class="layer" style="z-index: 2;">
+  <img id="cat" src="cat.png" alt="Cat" class="layer" style="z-index: 1;">
 
   <!-- Icons overlay -->
   <div class="icons-overlay">
@@ -325,6 +331,17 @@ body.dark-mode .floating-icons a:hover {
   <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)" aria-label="Discord"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
 </div>
 </div>
+
+<!-- Bộ ảnh Page2 -->
+<div class="overlay-container Page2">
+  <img id="so-luoc" src="so-luoc.png" alt="So Luoc" class="layer" style="z-index: 5;">
+  <img id="cat-meme" src="cat-meme.png" alt="Cat Meme" class="layer" style="z-index: 4;">
+  <img id="chibi" src="chibi.png" alt="Chibi" class="layer" style="z-index: 4;">
+  <img id="app" src="app.png" alt="App" class="layer" style="z-index: 3;">
+  <img id="main" src="main.png" alt="Main" class="layer" style="z-index: 2;">
+  <img id="craft" src="craft.png" alt="Craft" class="layer" style="z-index: 1;">
+</div>
+
 
     <div class="awards">
       <div class="award-item">
@@ -482,6 +499,57 @@ toggleBtn.addEventListener('click', () => {
       setTimeout(() => element.classList.remove("show-note"), 2000);
     }).catch(err => console.error("Lỗi khi copy Discord:", err));
   };
+
+
+
+// ===== Hiệu ứng 3D parallax =====
+// ===== Hiệu ứng 3D parallax =====
+// ===== Hiệu ứng 3D parallax tự nhiên =====
+document.addEventListener("mousemove", (e) => {
+  const containers = document.querySelectorAll(".overlay-container");
+  containers.forEach(container => {
+    const rect = container.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // tọa độ chuột so với tâm (-1 đến 1)
+    const offsetX = (e.clientX - centerX) / (rect.width / 2);
+    const offsetY = (e.clientY - centerY) / (rect.height / 2);
+
+    // lấy tất cả layer và tính maxDepth để chuẩn hóa
+    const layers = Array.from(container.querySelectorAll(".layer"));
+    const depths = layers.map(l => parseInt(l.style.zIndex) || 1);
+    const maxDepth = Math.max(...depths);
+
+    layers.forEach(layer => {
+      // 🚫 giữ nguyên các layer này
+      if (["flags", "house", "commission", "main", "so-luoc"].includes(layer.id)) return;
+
+      const depth = parseInt(layer.style.zIndex) || 1;
+      const strength = (maxDepth - depth + 1) * 6;
+      const direction = depth >= maxDepth / 2 ? 1 : -1;
+
+      const moveX = offsetX * strength * direction;
+      const moveY = offsetY * strength * direction;
+
+      layer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+  });
+});
+
+
+// Reset khi chuột rời khỏi
+document.querySelector(".overlay-container").addEventListener("mouseleave", () => {
+  document.querySelectorAll(".overlay-container .layer").forEach(layer => {
+    if (["flags", "house", "commission", "main", "so-luoc"].includes(layer.id)) return;
+    layer.style.transform = "translate(0,0)";
+  });
+});
+
+
+
+
+
 
   // ===== Comic logic =====
   function renderDeck(direction = null) {
