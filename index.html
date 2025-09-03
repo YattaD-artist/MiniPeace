@@ -550,6 +550,20 @@ if (!/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
 
 
 
+// Chuyển hướng khi click vào vùng cụ thể của Page1
+const page1 = document.querySelector('.overlay-container.Page1');
+
+if (page1) {
+  page1.addEventListener('click', (e) => {
+    const rect = page1.getBoundingClientRect();
+    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+    const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+
+    if (xPercent >= 64 && xPercent <= 77 && yPercent >= 36 && yPercent <= 50) {
+      window.location.href = 'Comm.html';
+    }
+  });
+}
 
 
 
