@@ -231,13 +231,6 @@ p {
   color: #0c2f4d;
   letter-spacing: 0.5px;
 }
-/* Tất cả ảnh trong content scale dựa theo flags.webp */
-.content img {
-  max-width: 100%; /* để responsive */
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
 
 .images {
   transition: margin-top 0.3s ease;
@@ -250,6 +243,8 @@ p {
 }
 
 .images img {
+  width: 100%;
+  max-width: 900px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   cursor: pointer;
@@ -268,6 +263,8 @@ p {
 }
 
 .PunkgaMerch img {
+  width: 100%;
+  max-width: 900px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   cursor: pointer;
@@ -311,10 +308,13 @@ p {
 
 .upz-wrapper {
   position: relative;
+  width: 100%;
+  max-width: 720px;
   margin: 0 auto;
 }
 
 .upz-main, .upz-hover {
+  width: 100%;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   cursor: pointer;
@@ -685,18 +685,20 @@ body.dark-mode .comic-viewer {
   </style>
 </head>
 <body>
+<!--Lung Linh -->
+<div class="gold-sparkles" id="gold-sparkles"></div>
+ <!-- Toggle Button -->
+<button id="theme-toggle" class="theme-toggle" aria-label="Chuyển đổi chế độ">
+  <i id="theme-icon" class="fas fa-sun"></i>
+</button>
+  <div class="theme-hint" id="themeHint">Nhấn vào đây<br>để đổi chế độ</div>
+ <!--Tiêu Đề -->
   <div class="content">
+    <h1>MINI PEACE | MAI THỦY TIÊN</h1>
+    <h2>FREELANCE 2D ARTIST</h2>
+    
     <!-- Thêm ID để floating-icons hoạt động -->
-    <p id="portfolio-header" class="portfolio-label"></p>
-
-
-    <div class="images">
-<img src="assets/flags.webp" alt="Cờ" loading="lazy" />
-<img src="assets/mini peace .webp" alt="Tên" loading="lazy" />
-<img src="assets/house.webp" alt="Nhà" loading="lazy" />
-<img src="assets/cat.webp" alt="Méo" loading="lazy" />
-<img src="assets/commission.webp" alt="Còm" loading="lazy" />
-    </div>
+    <p id="portfolio-header" class="portfolio-label"><strong>Portfolio 2025</strong></p>
 
    <div class="icons">
   <a href="https://www.facebook.com/minipeace2001" aria-label="Facebook"target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i></a>
@@ -706,6 +708,12 @@ body.dark-mode .comic-viewer {
   <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)" aria-label="Gmail"><i class="fab fa-google"></i><span class="copy-note">Đã copy địa chỉ email</span></a>
   <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)" aria-label="Discord"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
 </div>
+
+
+    <div class="images">
+      <img src="image02.webp" alt="Artwork Hello" loading="lazy" onclick="zoomImage(this)" /> <br>
+      <img src="image01.webp" alt="Artwork Intro" loading="lazy" onclick="zoomImage(this)" />
+    </div>
 
     <div class="awards">
       <h3><strong>GIẢI THƯỞNG VẼ TRUYỆN TRANH</strong></h3>
@@ -724,6 +732,7 @@ body.dark-mode .comic-viewer {
     </div>
 
     <div class="music-section">
+      <h3><strong>ARTWORK CHO SẢN PHẨM ÂM NHẠC</strong></h3>
       <div class="videos">
         <iframe src="https://www.youtube.com/embed/1oUTJ3FpdJ8" allowfullscreen loading="lazy"></iframe>
         <iframe src="https://www.youtube.com/embed/3_8VEcalmRE" allowfullscreen loading="lazy"></iframe>
@@ -733,9 +742,18 @@ body.dark-mode .comic-viewer {
     </div>
 
     <div class="PunkgaMerch">
+      <h3><strong>T-SHIRTS COLLAB CÙNG PUNKGAME</strong></h3>
+      <img src="PunkgaMerch01.webp" alt="T-Shirt thiết kế 1" onclick="zoomImage(this)">
+      <img src="PunkgaMerch02.webp" alt="T-Shirt thiết kế 2" onclick="zoomImage(this)">
+      <img src="PunkgaMerch03.webp" alt="T-Shirt thiết kế 3" onclick="zoomImage(this)">
     </div>
 
     <div class="upz-section">
+      <h3><strong>ARTWORK CHO LOCAL BRAND UPZ</strong></h3>
+      <div class="upz-wrapper">
+        <img src="UPz.webp" alt="Artwork chính" class="upz-main" />
+        <img src="UPz1.webp" alt="Artwork phụ" class="upz-hover" onclick="zoomImage(this)">
+      </div>
     </div>
   </div> <!-- Kết thúc .content -->
 
@@ -891,19 +909,7 @@ toggleBtn.addEventListener('click', () => {
       setTimeout(() => element.classList.remove("show-note"), 2000);
     }).catch(err => console.error("Lỗi khi copy Discord:", err));
   };
-
-  // ===== Lấy flags làm chuẩn ngang =====
-document.addEventListener("DOMContentLoaded", () => {
-  const refImg = new Image();
-  refImg.src = "assets/flags.webp";
-  refImg.onload = () => {
-    const refWidth = refImg.width; // chiều ngang gốc
-    document.querySelectorAll(".content img").forEach(img => {
-      img.style.maxWidth = refWidth + "px";
-    });
-  };
-});
-
+  
   // ===== Zoom ảnh =====
   window.zoomImage = function(img) {
     const overlay = document.createElement('div');
