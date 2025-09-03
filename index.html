@@ -78,7 +78,6 @@ body {
   position: relative;
   width: 80vw;
   aspect-ratio: 16/9;
-margin: 40px;
 
 }
 
@@ -505,46 +504,51 @@ toggleBtn.addEventListener('click', () => {
 // ===== Hiệu ứng 3D parallax =====
 // ===== Hiệu ứng 3D parallax =====
 // ===== Hiệu ứng 3D parallax tự nhiên =====
-document.addEventListener("mousemove", (e) => {
-  const containers = document.querySelectorAll(".overlay-container");
-  containers.forEach(container => {
-    const rect = container.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+if (!/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+  document.addEventListener("mousemove", (e) => {
+    const containers = document.querySelectorAll(".overlay-container");
+    containers.forEach(container => {
+      const rect = container.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
 
-    // tọa độ chuột so với tâm (-1 đến 1)
-    const offsetX = (e.clientX - centerX) / (rect.width / 2);
-    const offsetY = (e.clientY - centerY) / (rect.height / 2);
+      // tọa độ chuột so với tâm (-1 đến 1)
+      const offsetX = (e.clientX - centerX) / (rect.width / 2);
+      const offsetY = (e.clientY - centerY) / (rect.height / 2);
 
-    // lấy tất cả layer và tính maxDepth để chuẩn hóa
-    const layers = Array.from(container.querySelectorAll(".layer"));
-    const depths = layers.map(l => parseInt(l.style.zIndex) || 1);
-    const maxDepth = Math.max(...depths);
+      // lấy tất cả layer và tính maxDepth để chuẩn hóa
+      const layers = Array.from(container.querySelectorAll(".layer"));
+      const depths = layers.map(l => parseInt(l.style.zIndex) || 1);
+      const maxDepth = Math.max(...depths);
 
-    layers.forEach(layer => {
-      // 🚫 giữ nguyên các layer này
-      if (["flags", "house", "commission", "main", "so-luoc"].includes(layer.id)) return;
+      layers.forEach(layer => {
+        // 🚫 giữ nguyên các layer này
+        if (["flags", "house", "commission", "main", "so-luoc"].includes(layer.id)) return;
 
-      const depth = parseInt(layer.style.zIndex) || 1;
-      const strength = (maxDepth - depth + 1) * 6;
-      const direction = depth >= maxDepth / 2 ? 1 : -1;
+        const depth = parseInt(layer.style.zIndex) || 1;
+        const strength = (maxDepth - depth + 1) * 6;
+        const direction = depth >= maxDepth / 2 ? 1 : -1;
 
-      const moveX = offsetX * strength * direction;
-      const moveY = offsetY * strength * direction;
+        const moveX = offsetX * strength * direction;
+        const moveY = offsetY * strength * direction;
 
-      layer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        layer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      });
     });
   });
-});
 
-
-// Reset khi chuột rời khỏi
-document.querySelector(".overlay-container").addEventListener("mouseleave", () => {
-  document.querySelectorAll(".overlay-container .layer").forEach(layer => {
-    if (["flags", "house", "commission", "main", "so-luoc"].includes(layer.id)) return;
-    layer.style.transform = "translate(0,0)";
+  // Reset khi chuột rời khỏi
+  document.querySelectorAll(".overlay-container").forEach(container => {
+    container.addEventListener("mouseleave", () => {
+      container.querySelectorAll(".layer").forEach(layer => {
+        if (["flags", "house", "commission", "main", "so-luoc"].includes(layer.id)) return;
+        layer.style.transform = "translate(0,0)";
+      });
+    });
   });
-});
+}
+
+
 
 
 
