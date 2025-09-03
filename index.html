@@ -78,8 +78,13 @@ body {
   position: relative;
   width: 80vw;
   aspect-ratio: 16/9;
-
 }
+
+#commission {
+  transition: transform 0.2s ease;
+  transform-origin: center center;
+}
+
 
 /* Sparkles */
 .gold-sparkles {
@@ -562,6 +567,28 @@ if (page1) {
     if (xPercent >= 64 && xPercent <= 77 && yPercent >= 36 && yPercent <= 50) {
       window.location.href = 'Comm.html';
     }
+  });
+}
+
+
+const commissionImg = document.getElementById('commission');
+
+if (page1 && commissionImg) {
+  page1.addEventListener('mousemove', (e) => {
+    const rect = page1.getBoundingClientRect();
+    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+    const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+
+    if (xPercent >= 64 && xPercent <= 77 && yPercent >= 36 && yPercent <= 50) {
+      commissionImg.style.transform = 'scale(1.1)';
+    } else {
+      commissionImg.style.transform = 'scale(1)';
+    }
+  });
+
+  // Reset khi chuột rời container
+  page1.addEventListener('mouseleave', () => {
+    commissionImg.style.transform = 'scale(1)';
   });
 }
 
