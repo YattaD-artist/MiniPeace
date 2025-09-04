@@ -655,7 +655,7 @@ if (!/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
 
       layers.forEach(layer => {
         // 🚫 giữ nguyên các layer này
-        if (["flags", "house", "commission", "main", "so-luoc", "wall", "back","pen", "bg", "box"].includes(layer.id)) return;
+        if (["flags", "house", "commission", "main", "so-luoc", "wall", "back","pen", "bg", "box", "stuff"].includes(layer.id)) return;
 
         const depth = parseInt(layer.style.zIndex) || 1;
         const strength = (maxDepth - depth + 1) * 0.5;
@@ -673,7 +673,7 @@ if (!/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
   document.querySelectorAll(".overlay-container").forEach(container => {
     container.addEventListener("mouseleave", () => {
       container.querySelectorAll(".layer").forEach(layer => {
-        if (["flags", "house", "commission", "main", "so-luoc", "wall", "back", "pen", "bg", "box"].includes(layer.id)) return;
+        if (["flags", "house", "commission", "main", "so-luoc", "wall", "back", "pen", "bg", "box", "stuff"].includes(layer.id)) return;
         layer.style.transform = "translate(0,0)";
       });
     });
