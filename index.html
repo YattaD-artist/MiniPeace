@@ -193,9 +193,41 @@
 
     .close-btn {
       position: absolute; top: 20px; right: 30px; font-size: 2em; background: none; border: none; color: white;
-      cursor: url('assets/chi.png'), pointer; z-index: 10; transition: transform 0.2s ease;
+      cursor: url('assets/chi.png')16 16, pointer; z-index: 10; transition: transform 0.2s ease;
     }
     .close-btn:hover { transform: scale(1.2); }
+
+/* Audio icon */
+/* Audio icon */
+#audio-trigger {
+   position: absolute; top: 30px; right: 90px; font-size: 2em; background: none; border: none; color: white;
+      cursor: url('assets/chi.png')16 16, pointer; z-index: 10; transition: transform 0.2s ease;
+}
+
+#audio-trigger:hover {
+  transform: scale(1.2);
+}
+
+/* Hint nhạc: bảng nhỏ riêng, mặc định ẩn */
+#audio-hint {
+  position: absolute;
+  top: 30px;           /* cùng top với close-btn */
+  right: 150px; 
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 12;
+  transition: opacity 0.3s ease;
+}
+
+#audio-hint.show {
+  opacity: 1;
+}
 
     /* Icons overlay (links on Page1) */
     .icons-overlay {
@@ -360,6 +392,15 @@
     <div class="comic-blur-bg"></div>
     <button class="close-btn" onclick="closeComicGallery()">✕</button>
     <div class="comic-deck" id="comicDeck"></div>
+
+<!-- Icon nhạc -->
+<div id="audio-trigger">
+  <i class="fa-solid fa-music"></i>
+</div>
+
+<!-- Hint nhạc -->
+<div id="audio-hint">Bạn có thể nghe thử nhạc để tăng trải nghiệm đọc</div>
+
   </div>
 
   <!-- ===== Audio sources (preload) ===== -->
@@ -629,6 +670,9 @@
       currentPage = 0;
       if (viewer) viewer.style.display = "flex";
       renderDeck();
+  // hiển thị icon audio
+  const audioTrigger = document.getElementById("audio-trigger");
+  if (audioTrigger) audioTrigger.style.display = "flex";
     }
 
     function fadeOutAudio(audioEl) {
@@ -711,45 +755,76 @@
     /* ======================
        Buttons to open comics + audio handling
        ====================== */
+const audioTrigger = document.getElementById("audio-trigger");
+const audioHint = document.getElementById("audio-hint");
+let currentAudio = null; // audio đang bật
+
+audioTrigger.addEventListener("click", (e) => {
+  e.stopPropagation(); // tránh trigger chuyển trang
+  if (!currentAudio) return;
+
+  if (currentAudio.paused) {
+    currentAudio.currentTime = 0; // load lại từ đầu
+    currentAudio.play().catch(err => console.warn("Audio error:", err));
+  } else {
+    currentAudio.pause();
+  }
+});
+
+// Hiển thị hint tạm thời 5s
+function showAudioHint() {
+  audioHint.classList.add("show");
+  setTimeout(() => audioHint.classList.remove("show"), 5000);
+}
+
+// Khi mở truyện, show hint
+showAudioHint();
+
+
+
     const btnWow = document.getElementById("btn-read-wow");
-    if (btnWow) {
-      btnWow.addEventListener("click", () => {
-        fadeOutAudio(audio);
-        fadeOutAudio(wowAudio);
-        if (wowAudio) {
-          wowAudio.volume = 1.0;
-          wowAudio.play().catch(err => console.warn("WOW audio error:", err));
-        }
-        comicPages = ["WOW/01.webp", "WOW/02.webp", "WOW/03.webp", "WOW/04.webp", "WOW/05.webp", "WOW/06.webp"];
-        openComicGallery();
-      });
-    }
+if (btnWow) {
+  btnWow.addEventListener("click", () => {
+    fadeOutAudio(audio);
+    fadeOutAudio(wowAudio);
+    currentAudio = wowAudio; // lưu audio đang mở
+    comicPages = ["WOW/01.webp", "WOW/02.webp", "WOW/03.webp", "WOW/04.webp", "WOW/05.webp", "WOW/06.webp"];
+    openComicGallery();
+  });
+}
 
-    const btnKaia = document.getElementById("btn-read-kaia");
-    if (btnKaia) {
-      btnKaia.addEventListener("click", () => {
-        fadeOutAudio(wowAudio);
-        if (audio) {
-          audio.volume = 1.0;
-          audio.play().catch(err => console.warn("KAIA audio error:", err));
-        }
-        comicPages = ["KAYA/01.webp", "KAYA/02.webp", "KAYA/03.webp", "KAYA/04.webp", "KAYA/05.webp"];
-        openComicGallery();
-      });
-    }
+const btnKaia = document.getElementById("btn-read-kaia");
+if (btnKaia) {
+  btnKaia.addEventListener("click", () => {
+    fadeOutAudio(wowAudio);
+    currentAudio = audio; // lưu audio đang mở
+    comicPages = ["KAYA/01.webp", "KAYA/02.webp", "KAYA/03.webp", "KAYA/04.webp", "KAYA/05.webp"];
+    openComicGallery();
+  });
+}
 
-    const btnAva = document.getElementById("btn-read-ava");
-    if (btnAva) {
-      btnAva.addEventListener("click", () => {
-        fadeOutAudio(audio);
-        fadeOutAudio(wowAudio);
-        comicPages = [
-          "AVA/01.webp","AVA/02.webp","AVA/03.webp","AVA/04.webp","AVA/05.webp",
-          "AVA/06.webp","AVA/07.webp","AVA/08.webp","AVA/09.webp","AVA/10.webp","AVA/11.webp"
-        ];
-        openComicGallery();
-      });
-    }
+const btnAva = document.getElementById("btn-read-ava");
+if (btnAva) {
+  btnAva.addEventListener("click", () => {
+    fadeOutAudio(audio);
+    fadeOutAudio(wowAudio);
+    currentAudio = null; // không có audio cho AVA
+    comicPages = ["AVA/01.webp","AVA/02.webp","AVA/03.webp","AVA/04.webp","AVA/05.webp",
+                  "AVA/06.webp","AVA/07.webp","AVA/08.webp","AVA/09.webp","AVA/10.webp","AVA/11.webp"];
+    openComicGallery();
+  });
+}
+
+window.closeComicGallery = function() {
+  if (viewer) viewer.style.display = "none";
+  fadeOutAudio(audio);
+  fadeOutAudio(wowAudio);
+
+  // ẩn icon khi đóng
+  const audioTrigger = document.getElementById("audio-trigger");
+  if (audioTrigger) audioTrigger.style.display = "none";
+};
+
 
     /* ======================
        Preload comic images (không bắt buộc nhưng tốt để UX)
