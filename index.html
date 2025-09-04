@@ -37,26 +37,6 @@ body {
   min-width: 320px;
   overflow: hidden;
 }
-.content::before {
-  content: "";
-  position: absolute;
-  top: 10px; left: 10px; right: 10px; bottom: 10px;
-  border-radius: 10px;
-  pointer-events: none;
-  background-image:
-    repeating-linear-gradient(to right, transparent 0 5px, #f27b84 5px 25px, transparent 25px 32px),
-    repeating-linear-gradient(to bottom, transparent 0 5px, #f27b84 5px 25px, transparent 25px 32px),
-    repeating-linear-gradient(to left, transparent 0 5px, #f27b84 5px 25px, transparent 25px 32px),
-    repeating-linear-gradient(to top, transparent 0 5px, #f27b84 5px 25px, transparent 25px 32px);
-  background-repeat: no-repeat;
-  background-position: top left, top right, bottom right, bottom left;
-  background-size: calc(100% - 25px) 6px,
-                   6px calc(100% - 25px),
-                   calc(100% - 25px) 6px,
-                   6px calc(100% - 25px);
-  transform: rotateZ(-0.1deg);
-  filter: drop-shadow(0 0 0.7px rgba(0, 0, 0, 0.5));
-}
 
 /* Overlay container for PNG */
 .overlay-container {
