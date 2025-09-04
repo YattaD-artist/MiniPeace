@@ -1,0 +1,20 @@
+{
+  "name": "MiniPeace",
+  "short_name": "MiniPeace",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#75a7da",
+  "theme_color": "#412a24",
+  "icons": [
+    {
+      "src": "/icon192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
