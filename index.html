@@ -241,11 +241,11 @@
     /* Floating icons (left side) */
     .floating-icons {
       position: fixed; top: 50%; left: 16px; transform: translateY(-50%); display: flex; flex-direction: column; gap: 20px;
-      font-size: 32px; z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+      font-size: 32px; z-index: 999; opacity: 0; transition: opacity 0.4s ease;
     }
-    .floating-icons.visible { opacity: 1; pointer-events: auto; }
+    .floating-icons.visible { opacity: 1; pointer-events: auto; cursor: url('assets/chi.png') 16 16, pointer; }
     .floating-icons a { color: #0c2f4d; transition: transform 0.2s ease, color 0.2s ease; }
-    .floating-icons a:hover { transform: scale(1.3); color: #f27b84; }
+    .floating-icons a:hover { transform: scale(1.3); color: #f27b84; cursor: url('assets/chi.png') 16 16, pointer; }
 
     /* Gmail tooltip */
     .gmail-icon { position: relative; }
