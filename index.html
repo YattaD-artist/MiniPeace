@@ -190,40 +190,67 @@ body.dark-mode #loading-screen {
     #v2b { left: 50%; top: 72%; }
     #v2c { left: 72%; top: 72%; }
 
-/* Ẩn overlay mặc định */
-#video-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+.videos .thumb-wrap {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 16%;
+  height: 28%;
+  z-index: 20;
+  cursor: url('assets/chi.png') 16 16, pointer;
+  pointer-events: auto; /* ✅ cho phép click lại */
 }
 
-/* Hộp chứa video */
-#video-overlay .video-container {
-  position: relative;
-  width: 90%;
-  max-width: 800px;
-  aspect-ratio: 16/9;
-}
 
-/* Iframe chiếm hết khung */
-#overlay-iframe {
+.videos .thumb-wrap img.video-thumb {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   border: none;
-  border-radius: 12px;
-  background: #000;
+  display: block;
 }
 
-/* Nút X */
-#close-overlay {
+.videos .thumb-wrap .yt-icon {
   position: absolute;
-  top: -40px;
-  right: 0;
-  font-size: 32px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 400%;   /* icon = 60% chiều rộng thumbnail */
+  color: red;
+  opacity: 1;
+  pointer-events: none; /* click xuyên qua icon */
+}
+
+
+/* Overlay */
+#videoOverlay {
+  display: none; /* ẩn mặc định */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+#videoOverlay .overlay-content {
+  position: relative;
+  width: 80%;
+  max-width: 900px;
+}
+
+#videoOverlay iframe {
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #000;
+}
+
+#closeOverlay {
+  position: absolute;
+  top: -40px; right: -20px;
+  font-size: 40px;
+  font-weight: bold;
   color: white;
   cursor: pointer;
 }
@@ -443,15 +470,60 @@ body.dark-mode #loading-screen {
       <img id="pen" src="Page4/pen.png" alt="Pen" class="layer" style="z-index: 2;">
       <img id="back" src="Page4/back.png" alt="Back" class="layer" style="z-index: 1;">
 
-      <div class="videos">
-        <!-- embed links (kept as embed) -->
-        <iframe id="v1a" src="https://www.youtube.com/embed/1ux6Nn8Bh3A" title="v1a" allowfullscreen loading="lazy"></iframe>
-        <iframe id="v1b" src="https://www.youtube.com/embed/3_8VEcalmRE" title="v1b" allowfullscreen loading="lazy"></iframe>
-        <iframe id="v1c" src="https://www.youtube.com/embed/1oUTJ3FpdJ8" title="v1c" allowfullscreen loading="lazy"></iframe>
-        <iframe id="v2a" src="https://www.youtube.com/embed/PhKgdZEzMxc" title="v2a" allowfullscreen loading="lazy"></iframe>
-        <iframe id="v2b" src="https://www.youtube.com/embed/8ka2w0i97Xc" title="v2b" allowfullscreen loading="lazy"></iframe>
-        <iframe id="v2c" src="https://www.youtube.com/embed/luFUs8uNyvQ" title="v2c" allowfullscreen loading="lazy"></iframe>
-      </div>
+    <!-- Vùng video thumbnails -->
+<div class="videos">
+  <div class="thumb-wrap" id="v1a">
+    <img src="https://img.youtube.com/vi/1ux6Nn8Bh3A/hqdefault.jpg"
+         alt="v1a" class="video-thumb"
+         data-url="https://www.youtube.com/embed/1ux6Nn8Bh3A?autoplay=1">
+    <i class="fab fa-youtube yt-icon"></i>
+  </div>
+
+  <div class="thumb-wrap" id="v1b">
+    <img src="https://img.youtube.com/vi/3_8VEcalmRE/hqdefault.jpg"
+         alt="v1b" class="video-thumb"
+         data-url="https://www.youtube.com/embed/3_8VEcalmRE?autoplay=1">
+    <i class="fab fa-youtube yt-icon"></i>
+  </div>
+
+  <div class="thumb-wrap" id="v1c">
+    <img src="https://img.youtube.com/vi/1oUTJ3FpdJ8/hqdefault.jpg"
+         alt="v1c" class="video-thumb"
+         data-url="https://www.youtube.com/embed/1oUTJ3FpdJ8?autoplay=1">
+    <i class="fab fa-youtube yt-icon"></i>
+  </div>
+
+  <div class="thumb-wrap" id="v2a">
+    <img src="https://img.youtube.com/vi/PhKgdZEzMxc/hqdefault.jpg"
+         alt="v2a" class="video-thumb"
+         data-url="https://www.youtube.com/embed/PhKgdZEzMxc?autoplay=1">
+    <i class="fab fa-youtube yt-icon"></i>
+  </div>
+
+  <div class="thumb-wrap" id="v2b">
+    <img src="https://img.youtube.com/vi/8ka2w0i97Xc/hqdefault.jpg"
+         alt="v2b" class="video-thumb"
+         data-url="https://www.youtube.com/embed/8ka2w0i97Xc?autoplay=1">
+    <i class="fab fa-youtube yt-icon"></i>
+  </div>
+
+  <div class="thumb-wrap" id="v2c">
+    <img src="https://img.youtube.com/vi/luFUs8uNyvQ/hqdefault.jpg"
+         alt="v2c" class="video-thumb"
+         data-url="https://www.youtube.com/embed/luFUs8uNyvQ?autoplay=1">
+    <i class="fab fa-youtube yt-icon"></i>
+  </div>
+</div>
+
+
+<!-- Overlay hiển thị video -->
+<div id="videoOverlay">
+  <div class="overlay-content">
+    <span id="closeOverlay">&times;</span>
+    <iframe id="overlayIframe" frameborder="0" allowfullscreen></iframe>
+  </div>
+</div>
+
     </div>
 
     <!-- ===== Page5 layers ===== -->
@@ -496,14 +568,6 @@ body.dark-mode #loading-screen {
     <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)" aria-label="Gmail"><i class="fab fa-google"></i><span class="copy-note">Đã copy địa chỉ email</span></a>
     <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)" aria-label="Discord"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
   </div>
-
-<!-- Overlay video -->
-<div id="video-overlay">
-  <div class="video-container">
-    <span id="close-overlay">&times;</span>
-    <iframe id="overlay-iframe" src="" frameborder="0" allowfullscreen></iframe>
-  </div>
-</div>
 
 
   <!-- ======================
@@ -949,12 +1013,51 @@ window.closeComicGallery = function() {
 
   }); // end DOMContentLoaded
 
+// Video YOUTUBE
+// ======================
+// Video Overlay Logic
+// ======================
+document.addEventListener("DOMContentLoaded", () => {
+  const thumbs = document.querySelectorAll(".video-thumb");
+  const overlay = document.getElementById("videoOverlay");
+  const iframe = document.getElementById("overlayIframe");
+  const closeBtn = document.getElementById("closeOverlay");
 
+  thumbs.forEach(thumb => {
+    thumb.onclick = (e) => {
+      e.preventDefault();   // chắc chắn chặn hành vi mặc định
+      e.stopPropagation();  // chắc chắn chặn lan ra ngoài
+
+      iframe.src = thumb.dataset.url;
+      overlay.style.display = "flex";
+    };
+  });
+
+  closeBtn.onclick = () => {
+    iframe.src = ""; // dừng video khi đóng
+    overlay.style.display = "none";
+  };
+});
+
+
+// Đóng overlay khi bấm ra ngoài khung video
+if (videoOverlay) {
+  videoOverlay.addEventListener("click", (e) => {
+    if (e.target === videoOverlay) {
+      videoOverlay.style.display = "none";
+      overlayIframe.src = "";
+    }
+  });
+}
+
+
+
+// LOADING SCREEN!!!
   document.addEventListener("DOMContentLoaded", () => {
     const loadingScreen = document.getElementById("loading-screen");
 
     window.addEventListener("load", () => {
-      // Thêm class để chạy animationF
+      // Thêm class để chạy animation
       setTimeout(() => {
         loadingScreen.classList.add("hidden");
       }, 300);
@@ -965,41 +1068,6 @@ window.closeComicGallery = function() {
       }, 1000);
     });
   });
-
-
-// Lấy các phần tử
-const videoOverlay = document.getElementById("video-overlay");
-const overlayIframe = document.getElementById("overlay-iframe");
-const closeOverlay = document.getElementById("close-overlay");
-
-// Áp dụng cho tất cả iframe video trên trang
-document.querySelectorAll("iframe").forEach((iframe) => {
-  iframe.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    // Lấy src từ iframe gốc
-    const videoSrc = iframe.getAttribute("src");
-
-    // Hiển thị overlay với src đó
-    overlayIframe.src = videoSrc;
-    videoOverlay.style.display = "flex";
-  });
-});
-
-// Tắt overlay khi bấm nút X
-closeOverlay.addEventListener("click", () => {
-  overlayIframe.src = ""; // clear để ngắt video
-  videoOverlay.style.display = "none";
-});
-
-// (Tuỳ chọn) tắt khi click ra ngoài vùng video
-videoOverlay.addEventListener("click", (e) => {
-  if (e.target === videoOverlay) {
-    overlayIframe.src = "";
-    videoOverlay.style.display = "none";
-  }
-});
 
   </script>
 </body>
