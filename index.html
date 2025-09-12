@@ -190,6 +190,45 @@ body.dark-mode #loading-screen {
     #v2b { left: 50%; top: 72%; }
     #v2c { left: 72%; top: 72%; }
 
+/* Ẩn overlay mặc định */
+#video-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Hộp chứa video */
+#video-overlay .video-container {
+  position: relative;
+  width: 90%;
+  max-width: 800px;
+  aspect-ratio: 16/9;
+}
+
+/* Iframe chiếm hết khung */
+#overlay-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+  background: #000;
+}
+
+/* Nút X */
+#close-overlay {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  font-size: 32px;
+  color: white;
+  cursor: pointer;
+}
+
+
     /* sparkles overlay (dark-mode only) */
     .gold-sparkles { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; display: none; }
     #gold-sparkles { display: none; }
@@ -457,6 +496,15 @@ body.dark-mode #loading-screen {
     <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)" aria-label="Gmail"><i class="fab fa-google"></i><span class="copy-note">Đã copy địa chỉ email</span></a>
     <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)" aria-label="Discord"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
   </div>
+
+<!-- Overlay video -->
+<div id="video-overlay">
+  <div class="video-container">
+    <span id="close-overlay">&times;</span>
+    <iframe id="overlay-iframe" src="" frameborder="0" allowfullscreen></iframe>
+  </div>
+</div>
+
 
   <!-- ======================
        SCRIPTS (giữ toàn bộ chức năng)
@@ -906,7 +954,7 @@ window.closeComicGallery = function() {
     const loadingScreen = document.getElementById("loading-screen");
 
     window.addEventListener("load", () => {
-      // Thêm class để chạy animation
+      // Thêm class để chạy animationF
       setTimeout(() => {
         loadingScreen.classList.add("hidden");
       }, 300);
@@ -917,6 +965,41 @@ window.closeComicGallery = function() {
       }, 1000);
     });
   });
+
+
+// Lấy các phần tử
+const videoOverlay = document.getElementById("video-overlay");
+const overlayIframe = document.getElementById("overlay-iframe");
+const closeOverlay = document.getElementById("close-overlay");
+
+// Áp dụng cho tất cả iframe video trên trang
+document.querySelectorAll("iframe").forEach((iframe) => {
+  iframe.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Lấy src từ iframe gốc
+    const videoSrc = iframe.getAttribute("src");
+
+    // Hiển thị overlay với src đó
+    overlayIframe.src = videoSrc;
+    videoOverlay.style.display = "flex";
+  });
+});
+
+// Tắt overlay khi bấm nút X
+closeOverlay.addEventListener("click", () => {
+  overlayIframe.src = ""; // clear để ngắt video
+  videoOverlay.style.display = "none";
+});
+
+// (Tuỳ chọn) tắt khi click ra ngoài vùng video
+videoOverlay.addEventListener("click", (e) => {
+  if (e.target === videoOverlay) {
+    overlayIframe.src = "";
+    videoOverlay.style.display = "none";
+  }
+});
 
   </script>
 </body>
