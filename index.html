@@ -208,16 +208,20 @@ body.dark-mode #loading-screen {
   border: none;
   display: block;
 }
-
 .videos .thumb-wrap .yt-icon {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 400%;   /* icon = 60% chiều rộng thumbnail */
+  height: 80%;
+  width: auto;
+  font-size: unset;   /* bỏ font-size để dùng height */
   color: red;
   opacity: 1;
   pointer-events: none; /* click xuyên qua icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
