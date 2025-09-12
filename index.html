@@ -1059,11 +1059,7 @@ if (videoOverlay) {
 // LOADING SCREEN!!!
   document.addEventListener("DOMContentLoaded", () => {
     const loadingScreen = document.getElementById("loading-screen");
-
-    // Loading screen: đảm bảo hiển thị tối thiểu 3 giây
-  const loadingScreen = document.getElementById("loading-screen");
-  const minLoadingTime = 3000; // 3 giây
-  const loadingStart = Date.now();
+    
     window.addEventListener("load", () => {
       // Thêm class để chạy animation
       setTimeout(() => {
