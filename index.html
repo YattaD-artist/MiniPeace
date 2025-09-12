@@ -9,6 +9,37 @@
   <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
   <style>
+/* Loading Screen */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: #fefaf0; /* nền light mode */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+  overflow: hidden; /* chặn scroll */
+}
+body.dark-mode #loading-screen {
+  background: #0b0f1a; /* nền dark mode */
+}
+
+/* Hiệu ứng riêng cho ảnh gif */
+#loading-screen img {
+  max-height: 80vh;
+  max-width: 80vw;
+  object-fit: contain;
+  transition: transform 2s ease, opacity 1.2s ease; /* chậm hơn nền */
+}
+
+/* Khi ẩn thì ảnh di chuyển sang phải + mờ dần */
+#loading-screen.hidden img {
+  transform: translateX(100vw); 
+  opacity: 0;
+}
+
+
     /* ======================
        RESET & BASE
        ====================== */
@@ -204,6 +235,10 @@
       cursor: url('assets/chi.png')16 16, pointer; z-index: 10; transition: transform 0.2s ease;
 }
 
+#audio-trigger.active i {
+  color: #f27b84; /* màu khi đang bật nhạc */ cursor: url('assets/chi.png')16 16, pointer;
+}
+
 #audio-trigger:hover {
   transform: scale(1.2);
 }
@@ -284,6 +319,12 @@
   </style>
 </head>
 <body>
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <img src="assets/loading.gif" alt="Loading...">
+</div>
+
   <!-- ===== Sparkles overlay (for dark-mode) ===== -->
   <div class="gold-sparkles" id="gold-sparkles"></div>
 
@@ -765,9 +806,12 @@ audioTrigger.addEventListener("click", (e) => {
 
   if (currentAudio.paused) {
     currentAudio.currentTime = 0; // load lại từ đầu
-    currentAudio.play().catch(err => console.warn("Audio error:", err));
+    currentAudio.play().then(() => {
+      audioTrigger.classList.add("active"); // đổi màu khi bật
+    }).catch(err => console.warn("Audio error:", err));
   } else {
     currentAudio.pause();
+    audioTrigger.classList.remove("active"); // trở về màu gốc khi tắt
   }
 });
 
@@ -856,6 +900,24 @@ window.closeComicGallery = function() {
     }
 
   }); // end DOMContentLoaded
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const loadingScreen = document.getElementById("loading-screen");
+
+    window.addEventListener("load", () => {
+      // Thêm class để chạy animation
+      setTimeout(() => {
+        loadingScreen.classList.add("hidden");
+      }, 300);
+
+      // Sau khi animation xong thì remove khỏi DOM
+      setTimeout(() => {
+        loadingScreen.style.display = "none";
+      }, 1000);
+    });
+  });
+
   </script>
 </body>
 </html>
