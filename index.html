@@ -213,11 +213,13 @@ body.dark-mode #loading-screen {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: auto;
-  font-size: 64px; 
+  font-size: 48px;
   color: red;
-  opacity: 1;
-  pointer-events: none; /* click xuyên qua icon */
+  background: white;         /* nền trắng */
+  border-radius: 12px;       /* bo góc (12px = logo vuông bo góc YouTube) */
+  padding: 0px 6px;         /* khoảng cách để tam giác không sát viền */
+  box-shadow: 0 2px 2px rgba(0,0,0,0.3); /* tạo chiều sâu */
+  pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
