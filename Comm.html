@@ -106,6 +106,243 @@ canvas.flag {
     .floating-icons a { color: #0c2f4d; transition: transform 0.2s ease, color 0.2s ease; }
     .floating-icons a:hover { transform: scale(1.3); color: #f27b84; cursor: url('assets/chi.png') 16 16, pointer; }
 
+    .gmail-icon { position: relative; }
+    .copy-note {
+      position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+      font-size: 12px; color: #f8c365; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease; white-space: nowrap; margin-top: 4px;
+    }
+    .gmail-icon.show-note .copy-note { opacity: 1; }
+
+    @media (max-width: 768px) {
+      body { padding: 5px 1px; min-height: 100vh; }
+      .content {
+    position: absolute;
+   margin-left: 2.1rem;
+    top: 50%; 
+    transform: translateY(-50%);
+    max-width: 75vw;
+  }
+      .floating-icons { left: 0.8rem; font-size: 1.3em; }
+      .main-image { width: 100%; }
+      .back-btn {width: 10vww; left: 10px; top: 10px;}
+    }
+
+    body.dark-mode {
+      background:
+        linear-gradient(to right, rgba(15,23,42,0.9), rgba(30,41,59,0.9)),
+        repeating-linear-gradient(90deg, #dbeafe 0 20px, #bfdbfe 20px 40px),
+        repeating-linear-gradient(0deg, #dbeafe 0 20px, #bfdbfe 20px 40px);
+      background-blend-mode: multiply;
+      color: #e2e8f0;
+    }
+    body.dark-mode .content { background-color: rgba(0, 5, 15, 0.7); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); }
+    body.dark-mode .copy-note { color: #f8c365; }
+    body.dark-mode .floating-icons a { color: #f8c365; }
+    body.dark-mode .floating-icons a:hover { color: #f27b84; }
+
+    .gold-sparkles { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; display: none; }
+    body.dark-mode #gold-sparkles { display: block; }
+    .sparkle {
+      position: absolute; border-radius: 50%; background-color: #f8c365; opacity: 1;
+      animation: floatRandom linear infinite; filter: blur(1px);
+    }
+    .sparkle.faint { opacity: 0.7; filter: blur(1.2px) brightness(1.1); transform: scale(0.8); }
+    @keyframes floatRandom {
+      0% { transform: translate(0, 0); opacity: 0.8; }
+      50% { transform: translate(var(--x-move), -50vh); opacity: 1; }
+      100% { transform: translate(calc(var(--x-move) / 2), -120vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="gold-sparkles" id="gold-sparkles"></div>
+
+  <a href="index.html" class="back-btn" title="Quay lại trang chủ"></a>
+  
+  <div class="content">
+    <!-- Code A content -->
+    <img src="Comm/comm.png" alt="Main Image" class="main-image">
+
+    <div class="menu">
+      <canvas class="flag" data-src="Comm/flag1.png"></canvas>
+      <canvas class="flag" data-src="Comm/flag2.png"></canvas>
+      <canvas class="flag" data-src="Comm/flag3.png"></canvas>
+      <canvas class="flag" data-src="Comm/flag4.png"></canvas>
+      <canvas class="flag" data-src="Comm/flag5.png"></canvas>
+      <canvas class="flag" data-src="Comm/flag6.png"></canvas>
+    </div>
+
+    </div>
+
+  <!-- Floating icons -->
+  <div class="floating-icons">
+    <a href="https://www.facebook.com/minipeace2001" target="_blank"><i class="fab fa-facebook"></i></a>
+    <a href="https://www.instagram.com/minipeace2001/" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.behance.net/maithuytien" target="_blank"><i class="fab fa-behance"></i></a>
+    <a href="https://www.youtube.com/playlist?list=PLR5fl78Q7K1RJs1C-68pNzut2mKCL2Nod" target="_blank"><i class="fab fa-youtube"></i></a>
+    <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)"><i class="fab fa-google"></i><span class="copy-note">Đã copy email</span></a>
+    <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
+  </div>
+
+  <script>
+    /* waving flags (Code A) */
+    class WavingFlag {
+      constructor(canvas, src) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.img = new Image();
+        this.img.src = src;
+        this.img.onload = () => {
+          this.canvas.width = this.img.width;
+          this.canvas.height = this.img.height;
+          this.start();
+        };
+        this.time = 0;
+      }
+      start() {
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
+        requestAnimationFrame(() => this.animate());
+      }
+      animate() {
+        const ctx = this.ctx;
+        const { width, height } = this;
+        ctx.clearRect(0, 0, width, height);
+        let topHeight = height * 0.2;
+        let waveHeight = height - topHeight;
+        ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height * (topHeight / height), 0, 0, width, topHeight);
+        let syStart = this.img.height * (topHeight / height);
+        let sh = this.img.height - syStart;
+        let rowHeight = 15;
+        let rowCount = Math.floor(waveHeight / rowHeight);
+        for (let y = 0; y < rowCount; y++) {
+          let progress = y / rowCount;
+          let offset = Math.sin(this.time * 1.5 + y * 0.25) * 2 * progress;
+          ctx.drawImage(this.img, 0, syStart + (sh * y / rowCount), this.img.width, sh / rowCount,
+            offset, topHeight + y * rowHeight, width, rowHeight);
+        }
+        this.time += 0.025;
+        requestAnimationFrame(() => this.animate());
+      }
+    }
+    document.querySelectorAll('canvas.flag').forEach(c => new WavingFlag(c, c.getAttribute('data-src')));
+    window.addEventListener('load', () => {
+      if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+    });
+
+    /* sparkles */
+    const sparklesContainer = document.getElementById("gold-sparkles");
+    function createSparkles() {
+      if (!sparklesContainer) return;
+      sparklesContainer.innerHTML = '';
+      const sparkleCount = 30;
+      for (let i = 0; i < sparkleCount; i++) {
+        const s = document.createElement("div");
+        s.classList.add("sparkle");
+        if (Math.random() < 0.5) s.classList.add("faint");
+        s.style.left = `${Math.random() * 100}%`;
+        s.style.bottom = `-${20 + Math.random() * 40}px`;
+        const xMove = `${Math.random() * 60 - 30}vw`;
+        s.style.setProperty('--x-move', xMove);
+        s.style.animationDuration = `${5 + Math.random() * 10}s`;
+        s.style.animationDelay = `${Math.random() * 5}s`;
+        s.style.transform = `scale(${0.5 + Math.random() * 1.5}) rotate(${Math.random() * 360}deg)`;
+        const size = 6 + Math.random() * 8;
+        s.style.width = `${size}px`;
+        s.style.height = `${size}px`;
+        sparklesContainer.appendChild(s);
+      }
+    }
+
+    /* copy helpers */
+    window.copyEmail = el => {
+      navigator.clipboard.writeText("ttien39169@gmail.com").then(() => {
+        el.classList.add("show-note");
+        setTimeout(() => el.classList.remove("show-note"), 2000);
+      });
+    };
+    window.copyDiscord = el => {
+      navigator.clipboard.writeText("tienmai334").then(() => {
+        el.classList.add("show-note");
+        setTimeout(() => el.classList.remove("show-note"), 2000);
+      });
+    };
+  </script>
+</body>
+</html>      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      max-width: 90vw;
+      min-width: 320px;
+      overflow: hidden;
+    }
+
+body.dark-mode #loading-screen {
+  background: #0b0f1a; /* nền dark mode */
+}
+
+.main-image {
+  margin: 20px auto 0;   /* auto left-right để căn giữa */
+  width: 65%;            /* 65% chiều ngang container */
+  height: auto;
+  display: block;        /* để margin auto hoạt động */
+}
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 100px;
+      height: 100px;
+      background: url('Comm/back.png') no-repeat center center;
+      background-size: contain;
+      border: none;
+      cursor: url('assets/chi.png') 16 16, pointer;
+      z-index: 1000;
+    }
+.back-btn:hover {
+  animation: tilt-wiggle 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes tilt-wiggle {
+  0%   { transform: rotate(0deg); }
+  50%  { transform: rotate(-8deg); } /* nghiêng trái */
+  100% { transform: rotate(8deg); }  /* nghiêng phải */
+}
+
+.menu {
+  margin: 40px auto 0;   /* căn giữa cả khối menu */
+  display: flex;
+  justify-content: center; /* căn giữa các cờ */
+  gap: 20px;               /* khoảng cách giữa các cờ */
+  flex-wrap: wrap;         /* nếu màn hình hẹp thì xuống dòng */
+  width: auto;             /* không ép 90vw nữa */
+}
+
+canvas.flag {
+  width: 15%;      /* mỗi lá cờ chiếm 15% container cha */
+  min-width: 80px; /* đảm bảo không quá nhỏ khi màn nhỏ */
+  height: auto;
+    cursor: url('assets/chi.png') 16 16, pointer;
+}
+
+    /* --- floating icons --- */
+    .floating-icons {
+      position: fixed;
+      top: 50%;
+      left: 16px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      font-size: 32px;
+      z-index: 999;
+      opacity: 1;
+      pointer-events: auto;
+      cursor: url('assets/chi.png') 16 16, pointer;
+    }
+    .floating-icons a { color: #0c2f4d; transition: transform 0.2s ease, color 0.2s ease; }
+    .floating-icons a:hover { transform: scale(1.3); color: #f27b84; cursor: url('assets/chi.png') 16 16, pointer; }
+
     .gmail-icon .copy-note, .discord-icon .copy-note, 
     .gmail-icon, .discord-icon { position: relative; }
     .copy-note {
