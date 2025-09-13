@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
+
   <style>
 /* Loading Screen */
 #loading-screen {
@@ -130,7 +131,21 @@ body.dark-mode #loading-screen {
       z-index: 10;
       opacity: 0;
     }
-    #btn-commission:hover { transform: translate(-50%, -50%) scale(1.1); }
+
+/* Animation lắc lư cho commission.png */
+@keyframes sway {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(5deg); }
+  50%  { transform: rotate(-5deg); }
+  75%  { transform: rotate(5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+#commission.swaying {
+  transform-origin: 70.8% 38%;  /* tâm xoay */
+  animation: sway 0.8s ease-in-out infinite;
+}
+
 
     /* Page-specific classes (kept for markup parity) */
     .overlay-container.Page2,
@@ -1059,6 +1074,17 @@ if (videoOverlay) {
   });
 }
 
+const commissionImg = document.getElementById("commission");
+const btnCommissionHover = document.getElementById("btn-commission");
+
+if (btnCommissionHover && commissionImg) {
+  btnCommissionHover.addEventListener("mouseenter", () => {
+    commissionImg.classList.add("swaying");
+  });
+  btnCommissionHover.addEventListener("mouseleave", () => {
+    commissionImg.classList.remove("swaying");
+  });
+}
 
 
 // LOADING SCREEN!!!
