@@ -105,15 +105,32 @@ canvas.flag {
     }
     .floating-icons a { color: #0c2f4d; transition: transform 0.2s ease, color 0.2s ease; }
     .floating-icons a:hover { transform: scale(1.3); color: #f27b84; cursor: url('assets/chi.png') 16 16, pointer; }
+.gmail-icon .copy-note,
+.discord-icon .copy-note {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #f8c365;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+  margin-left: 6px; /* khoảng cách bên phải icon */
+  margin-top: 0;
+}
 
-    .gmail-icon { position: relative; }
-    .copy-note {
-      position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-      font-size: 12px; color: #f8c365; opacity: 0; pointer-events: none;
-      transition: opacity 0.3s ease; white-space: nowrap; margin-top: 4px;
-    }
-    .gmail-icon.show-note .copy-note { opacity: 1; }
-
+@media (max-width: 768px) {
+  .gmail-icon .copy-note,
+  .discord-icon .copy-note {
+    left: 110%; /* lùi xa hơn bên phải nếu cần */
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 10px;
+  }
+}
+    
     @media (max-width: 768px) {
       body { padding: 5px 1px; min-height: 100vh; }
       .content {
