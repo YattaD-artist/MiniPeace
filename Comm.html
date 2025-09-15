@@ -11,6 +11,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
+  overflow-y: scroll;
       font-family: 'Segoe UI', sans-serif;
       background: repeating-linear-gradient(90deg, #dbeafe 0 20px, #bfdbfe 20px 40px),
                   repeating-linear-gradient(0deg, #dbeafe 0 20px, #bfdbfe 20px 40px);
@@ -39,6 +40,14 @@
       min-width: 320px;
       overflow: hidden;
     }
+
+#flagImage[src="Comm/dichvu.png"] {
+  width: 70vw;   /* chiếm 70% chiều ngang màn hình */
+  height: auto;  /* giữ tỉ lệ gốc */
+  display: block;
+  margin: 10vh auto 0; /* cách trên 20px, căn giữa ngang */
+}
+
 
 body.dark-mode #loading-screen {
   background: #0b0f1a; /* nền dark mode */
@@ -87,6 +96,132 @@ canvas.flag {
   height: auto;
     cursor: url('assets/chi.png') 16 16, pointer;
 }
+
+/* link điều khoản (ẩn mặc định) */
+#termsLink {
+  display: none;
+  margin: 20px auto 0;
+  color: #ff3314;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* popup overlay */
+#termsPopup {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  z-index: 3000;
+  padding: 20px;
+}
+
+/* popup content */
+#termsPopup .popup-content {
+  background: #fff;
+  color: #111;
+  width: 100%;
+  max-width: 900px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  padding: 40px 60px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  text-align: left;
+  line-height: 1.7;
+  font-size: 18px;
+}
+
+/* table style like docx */
+.terms-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 18px;
+}
+.terms-table th,
+.terms-table td {
+  border: 1px solid #ccc;
+  padding: 8px 10px;
+  vertical-align: top;
+}
+.terms-table th {
+  background: #f5f5f5;
+  font-weight: 700;
+}
+
+/* close button */
+.popup-close {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+}
+.popup-close button {
+  background: #ff3314;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+/* make content readable on small screens */
+@media (max-width:600px){
+  #termsPopup .popup-content { padding: 14px; font-size: 14px; }
+}
+
+/* prevent background scroll when popup open */
+body.popup-open { overflow: hidden; }
+/* Tiêu đề chính */
+#termsTitle {
+  text-align: center;       /* căn giữa */
+  margin: 2.5rem 0 3rem;    /* khoảng cách trên dưới rộng hơn */
+  font-size: 2rem;          /* chữ to hơn */
+  font-weight: bold;
+}
+
+/* Tiêu đề mục con (1,2,3...) */
+#terms h3 {
+  margin-top: 2rem;         /* cách xa mục trên */
+  margin-bottom: 1rem;      /* tạo khoảng thở bên dưới */
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Danh sách nội dung */
+#terms ul {
+  margin: 0 0 1.5rem 1.5rem; /* thụt vào và cách dưới */
+  line-height: 1.6;          /* giãn dòng dễ đọc */
+}
+
+/* Bảng */
+#terms .terms-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 2rem;       /* cách trên dưới rộng hơn */
+}
+
+#terms .terms-table th,
+#terms .terms-table td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+#terms .terms-table th {
+  background-color: #f8f8f8;
+  font-weight: 600;
+}
+
+/* Tô nền nhẹ cho dòng xen kẽ */
+#terms .terms-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+
+
 
     /* --- floating icons --- */
     .floating-icons {
@@ -161,20 +296,26 @@ canvas.flag {
 
   <a href="index.html" class="back-btn" title="Quay lại trang chủ"></a>
   
-  <div class="content">
-    <!-- Code A content -->
-    <img src="Comm/comm.png" alt="Main Image" class="main-image">
+<div class="content">
+  <!-- ảnh chính -->
+  <img src="Comm/comm.png" alt="Main Image" class="main-image" id="commImage">
 
-    <div class="menu">
-      <canvas class="flag" data-src="Comm/flag1.png"></canvas>
-      <canvas class="flag" data-src="Comm/flag2.png"></canvas>
-      <canvas class="flag" data-src="Comm/flag3.png"></canvas>
-      <canvas class="flag" data-src="Comm/flag4.png"></canvas>
-      <canvas class="flag" data-src="Comm/flag5.png"></canvas>
-      <canvas class="flag" data-src="Comm/flag6.png"></canvas>
-    </div>
+  <!-- menu cờ -->
+  <div class="menu">
+    <canvas class="flag" data-src="Comm/flag1.png" data-img="Comm/dichvu.png"></canvas>
+    <canvas class="flag" data-src="Comm/flag2.png" data-img="Comm/quytrinh.png"></canvas>
+    <canvas class="flag" data-src="Comm/flag3.png" data-img="Comm/gia.png"></canvas>
+    <canvas class="flag" data-src="Comm/flag4.png" data-img="Comm/minhhoa.png"></canvas>
+    <canvas class="flag" data-src="Comm/flag5.png" data-img="Comm/truyen.png"></canvas>
+    <canvas class="flag" data-src="Comm/flag6.png" data-img="Comm/thanhtoan.png"></canvas>
+  </div>
 
-    </div>
+  <!-- chỗ hiện ảnh thay đổi -->
+  <div id="flagImageContainer" style="margin-top:20px;">
+    <img id="flagImage" src="" alt="" </div>
+<span id="termsLink">Xem chi tiết điều khoản dịch vụ</span>
+
+</div>
 
   <!-- Floating icons -->
   <div class="floating-icons">
@@ -185,6 +326,120 @@ canvas.flag {
     <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)"><i class="fab fa-google"></i><span class="copy-note">Đã copy email</span></a>
     <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
   </div>
+
+<div id="termsPopup" aria-hidden="true" role="dialog" aria-labelledby="termsTitle">
+  <div class="popup-content" role="document">
+    <div class="popup-close">
+      <button id="closeTermsBtn" aria-label="Đóng điều khoản">Đóng</button>
+    </div>
+
+   <section id="terms">
+  <h2 id="termsTitle">ĐIỀU KHOẢN DỊCH VỤ</h2>
+
+  <!-- 1. Phi thương mại -->
+  <h3>1. Vẽ Tranh Phi Thương Mại</h3>
+  <ul>
+    <li><strong>Bạn:</strong> Được phép đăng/tải/sử dụng tranh cho mục đích cá nhân, tặng, in ấn phi lợi nhuận. Hạn chế leak tranh trước khi hoàn thành. Nếu muốn leak, vui lòng báo họa sĩ để gắn tag chống trộm.</li>
+    <li><strong>Mình:</strong> Có thể đăng trên mạng xã hội (gắn tag tên khách hàng) để làm mẫu vẽ commission. Không kinh doanh trên sản phẩm vẽ cho khách.</li>
+  </ul>
+
+  <!-- 2. Kinh doanh -->
+  <h3>2. Vẽ Tranh Kinh Doanh</h3>
+  <ul>
+    <li><strong>Bạn:</strong> Được phép sử dụng tranh cho mục đích kiếm tiền (hãy thông báo mục đích sử dụng để mình tối ưu file). Hạn chế leak tranh trước khi hoàn thành. Nếu muốn leak, vui lòng báo họa sĩ để gắn tag chống trộm.</li>
+    <li><strong>Mình:</strong> Có thể đăng trên mạng xã hội (gắn tag/link sản phẩm kinh doanh của bạn). Không kinh doanh trên sản phẩm đã vẽ cho khách.</li>
+    <li><strong>Lưu ý giá:</strong> Liên hệ trực tiếp để biết giá dành cho mục đích thương mại (bảng giá bên dưới chỉ áp dụng phi thương mại).</li>
+  </ul>
+
+  <!-- 3. Deadline -->
+  <h3>3. Deadline</h3>
+  <table class="terms-table" aria-describedby="deadlineDesc">
+    <thead>
+      <tr>
+        <th>Hạng mục</th>
+        <th>Ghi chú</th>
+        <th>Thời gian</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Sticker</strong></td>
+        <td>Không nền / nền đơn giản</td>
+        <td>2 ngày – 1 tháng</td>
+      </tr>
+      <tr>
+        <td><strong>Minh hoạ</strong></td>
+        <td>Nền có chiều sâu</td>
+        <td>1 tuần – 2 tháng</td>
+      </tr>
+      <tr>
+        <td><strong>Truyện tranh</strong></td>
+        <td>1 – 17 trang</td>
+        <td>1 tuần – 2 tháng</td>
+      </tr>
+      <tr>
+        <td><strong>Animation</strong></td>
+        <td>Frame by frame</td>
+        <td>1 tuần – 2 tháng</td>
+      </tr>
+    </tbody>
+  </table>
+  <p id="deadlineDesc">
+    Nếu deadline quá gấp, sẽ có phụ phí. Nếu không yêu cầu deadline cụ thể thì càng tốt, vì mình có thêm thời gian để trau chuốt tác phẩm.<br>
+    <strong>Thời gian tính deadline:</strong> từ ngày nhận được chuyển khoản.
+  </p>
+
+  <!-- 4. Kích thước -->
+  <h3>4. Kích thước Thường Dùng</h3>
+  <ul>
+    <li>Vuông: 3000×3000 (300 dpi)</li>
+    <li>A4: 2480×3508 (300 dpi)</li>
+    <li>Video 2K: 3840×2160 (300 dpi)</li>
+  </ul>
+
+  <!-- 5. Nhận tranh -->
+  <h3>5. Nhận Tranh</h3>
+  <p>Tranh hoàn thiện sẽ được gửi qua email, bao gồm:</p>
+  <table class="terms-table">
+    <thead>
+      <tr>
+        <th>Loại</th>
+        <th>File</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="2"><strong>Tranh ảnh</strong></td>
+        <td>1 ảnh .png</td>
+      </tr>
+      <tr>
+        <td>1 file .psd (merged)</td>
+      </tr>
+      <tr>
+        <td rowspan="3"><strong>Video</strong></td>
+        <td>1 ảnh .png (thumbnail vuông)</td>
+      </tr>
+      <tr>
+        <td>1 file .psd (merged, kích thước gốc)</td>
+      </tr>
+      <tr>
+        <td>1 video .mp4</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 6. Ghi chú -->
+  <h3>6. Ghi Chú</h3>
+  <p>
+    Với khách hàng kinh doanh (âm nhạc, truyện tranh, bìa sách, quảng bá…), sản phẩm sẽ được coi là <strong>hợp tác</strong>.  
+    Mình rất cảm kích nếu bạn cho phép thêm tên tác giả vào thông tin sản phẩm.
+  </p>
+</section>
+
+
+  </div>
+</div>
+
 
   <script>
     /* waving flags (Code A) */
@@ -269,6 +524,79 @@ canvas.flag {
         setTimeout(() => el.classList.remove("show-note"), 2000);
       });
     };
+
+
+// references
+const flagImage = document.getElementById('flagImage');
+const termsLink = document.getElementById('termsLink');
+const termsPopup = document.getElementById('termsPopup');
+const closeTermsBtn = document.getElementById('closeTermsBtn');
+
+// helper: scroll tới đầu flagImage
+function scrollToFlagImage() {
+  const rect = flagImage.getBoundingClientRect();
+  const target = window.scrollY + rect.top;
+  window.scrollTo({ top: target, behavior: 'smooth' });
+}
+
+// open/close popup (kèm bù scrollbar để tránh nhảy layout)
+function openTermsPopup() {
+  const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+  if (scrollBarWidth > 0) document.body.style.paddingRight = scrollBarWidth + 'px';
+  document.body.classList.add('popup-open');
+  termsPopup.style.display = 'flex';
+  termsPopup.setAttribute('aria-hidden', 'false');
+}
+function closeTermsPopup() {
+  termsPopup.style.display = 'none';
+  termsPopup.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('popup-open');
+  document.body.style.paddingRight = '';
+}
+
+// click outside to close
+termsPopup.addEventListener('click', (e) => {
+  if (e.target === termsPopup) closeTermsPopup();
+});
+closeTermsBtn.addEventListener('click', closeTermsPopup);
+window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTermsPopup(); });
+
+// Flag click handling
+document.querySelectorAll('.flag').forEach(flag => {
+  flag.addEventListener('click', () => {
+    const imgSrc = flag.getAttribute('data-img');
+
+    // show image container and set src
+    flagImage.style.display = 'block';
+    flagImage.src = imgSrc;
+
+    // only show terms link for dichvu.png
+    if (imgSrc && imgSrc.includes('dichvu.png')) {
+      termsLink.style.display = 'block';
+    } else {
+      termsLink.style.display = 'none';
+    }
+
+    // scroll to top of image even if cached
+    if (flagImage.complete && flagImage.naturalHeight !== 0) {
+      scrollToFlagImage();
+    } else {
+      // if not loaded yet, scroll when loaded
+      flagImage.onload = () => {
+        scrollToFlagImage();
+      };
+      // fallback in case onload doesn't fire (rare)
+      setTimeout(() => {
+        scrollToFlagImage();
+      }, 300);
+    }
+  });
+});
+
+// open popup when clicking the terms link
+termsLink.addEventListener('click', openTermsPopup);
+
+
   </script>
 </body>
 </html>
