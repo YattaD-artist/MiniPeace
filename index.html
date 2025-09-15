@@ -430,13 +430,55 @@ z-index: 10;
     .floating-icons a { color: #0c2f4d; transition: transform 0.2s ease, color 0.2s ease; }
     .floating-icons a:hover { transform: scale(1.3); color: #f27b84; cursor: url('assets/chi.png') 16 16, pointer; }
 
-    /* Gmail tooltip */
-    .gmail-icon { position: relative; }
-    .copy-note {
-      position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-      font-size: 12px; color: #f8c365; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; white-space: nowrap; margin-top: 4px;
-    }
-    .gmail-icon.show-note .copy-note { opacity: 1; }
+    /* Gmail & Discord tooltip */
+/* Mỗi icon làm gốc tọa độ cho tooltip */
+.icons-overlay a,
+.floating-icons a {
+  position: relative;
+  display: inline-block; /* hoặc block nếu muốn full vùng click */
+}
+
+/* Tooltip riêng cho overlay */
+.icons-overlay .copy-note-overlay {
+  position: absolute;
+  bottom: 120%; /* nằm phía trên icon */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #f8c365;
+  background: rgba(0,0,0,0.7);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.icons-overlay .show-note .copy-note-overlay {
+  opacity: 1;
+}
+
+/* Tooltip riêng cho floating-icons */
+.floating-icons .copy-note-floating {
+  position: absolute;
+  left: 110%; /* nằm bên phải icon */
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #f27b84;
+  background: rgba(0,0,0,0.7);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.floating-icons .show-note .copy-note-floating {
+  opacity: 1;
+  transform: translateY(-50%) translateX(5px); /* hiệu ứng trượt nhẹ */
+}
+
 
     /* Responsive tweaks */
     @media (max-width: 768px) {
@@ -513,8 +555,14 @@ body.dark-mode #loading-screen { background: rgba(0, 5, 15, 1);
         <a href="https://www.instagram.com/minipeace2001/" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
         <a href="https://www.behance.net/maithuytien" aria-label="Behance" target="_blank" rel="noopener noreferrer"><i class="fab fa-behance"></i></a>
         <a href="https://www.youtube.com/playlist?list=PLR5fl78Q7K1RJs1C-68pNzut2mKCL2Nod" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
-        <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)" aria-label="Gmail"><i class="fab fa-google"></i><span class="copy-note">Đã copy địa chỉ email</span></a>
-        <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)" aria-label="Discord"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
+        <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)" aria-label="Gmail">
+  <i class="fab fa-google"></i>
+  <span class="copy-note-overlay">Đã copy email</span>
+</a>
+<a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)" aria-label="Discord">
+  <i class="fab fa-discord"></i>
+  <span class="copy-note-overlay">Đã copy Discord</span>
+</a>
       </div>
 
       <button id="btn-commission">Commission</button>
@@ -654,8 +702,14 @@ body.dark-mode #loading-screen { background: rgba(0, 5, 15, 1);
     <a href="https://www.instagram.com/minipeace2001/" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
     <a href="https://www.behance.net/maithuytien" aria-label="Behance" target="_blank" rel="noopener noreferrer"><i class="fab fa-behance"></i></a>
     <a href="https://www.youtube.com/playlist?list=PLR5fl78Q7K1RJs1C-68pNzut2mKCL2Nod" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
-    <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)" aria-label="Gmail"><i class="fab fa-google"></i><span class="copy-note">Đã copy địa chỉ email</span></a>
-    <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)" aria-label="Discord"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
+    <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)" aria-label="Gmail">
+  <i class="fab fa-google"></i>
+  <span class="copy-note-floating">Đã copy email</span>
+</a>
+<a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)" aria-label="Discord">
+  <i class="fab fa-discord"></i>
+  <span class="copy-note-floating">Đã copy Discord</span>
+</a>
   </div>
 
 
@@ -761,20 +815,22 @@ body.dark-mode #loading-screen { background: rgba(0, 5, 15, 1);
        Copy helpers (email & discord)
        - Ghi chú hiển thị tạm thời khi copy thành công
        ====================== */
-    window.copyEmail = function(element) {
-      const email = "ttien39169@gmail.com";
-      navigator.clipboard.writeText(email).then(() => {
-        element.classList.add("show-note");
-        setTimeout(() => element.classList.remove("show-note"), 2000);
-      }).catch(err => console.error("Lỗi khi copy email:", err));
-    };
-    window.copyDiscord = function(element) {
-      const discordID = "tienmai334";
-      navigator.clipboard.writeText(discordID).then(() => {
-        element.classList.add("show-note");
-        setTimeout(() => element.classList.remove("show-note"), 2000);
-      }).catch(err => console.error("Lỗi khi copy Discord:", err));
-    };
+window.copyEmail = function(element) {
+  const email = "ttien39169@gmail.com";
+  navigator.clipboard.writeText(email).then(() => {
+    element.classList.add("show-note");
+    setTimeout(() => element.classList.remove("show-note"), 2000);
+  });
+};
+
+window.copyDiscord = function(element) {
+  const discordID = "tienmai334";
+  navigator.clipboard.writeText(discordID).then(() => {
+    element.classList.add("show-note");
+    setTimeout(() => element.classList.remove("show-note"), 2000);
+  });
+};
+
 
     /* ======================
        Parallax (desktop only)
