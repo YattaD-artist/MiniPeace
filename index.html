@@ -11,23 +11,82 @@
 
   <style>
 /* Loading Screen */
+/* màn hình loading */
 #loading-screen {
   position: fixed;
-  inset: 0;
-  background: #fefaf0; /* nền light mode */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 250, 240, 1); 
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 99999;
-  transition: opacity 0.6s ease, visibility 0.6s ease;
-  overflow: hidden; /* chặn scroll */
+  z-index: 9999;
+  overflow: hidden;
 }
-body.dark-mode #loading-screen {
-  background: #0b0f1a; /* nền dark mode */
+
+/* hiệu ứng nền di chuyển */
+#loading-screen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    #9297ba,
+    #5478d2 5px,
+    #223f8a 5px,
+    #344aef 10px
+  );
+opacity: 0.2;
+  animation: slide-bg 3s linear infinite;
+  z-index: 0;
 }
+
+/* Nội dung loading căn giữa */
+#loading-screen .loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+#loading-screen .loading-text {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2rem;
+  color: #223f8a;
+  margin-bottom: 20px;
+  z-index: 2;
+}
+
+/* Fade out toàn bộ màn loading */
+#loading-screen.hidden {
+  opacity: 0;
+  transition: opacity 1s ease;
+  pointer-events: none;
+}
+
+/* gif nhân vật */
+#loading-screen img {
+  position: relative;
+  z-index: 1;
+  width: 100vw;
+  height: auto;
+}
+
+/* keyframes cho nền */
+@keyframes slide-bg {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 
 /* Hiệu ứng riêng cho ảnh gif */
 #loading-screen img {
+z-index: 10;
   max-height: 80vh;
   max-width: 80vw;
   object-fit: contain;
@@ -400,6 +459,8 @@ body.dark-mode #loading-screen {
       color: #e2e8f0;
     }
     body.dark-mode #gold-sparkles { display: block; }
+body.dark-mode #loading-screen { background: rgba(0, 5, 15, 1); 
+}
     body.dark-mode .content { background-color: rgba(0, 5, 15, 0.7); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); }
     body.dark-mode .comic-viewer { background: rgba(0,0,0,0.95); }
     body.dark-mode .copy-note { color: #f8c365; }
@@ -412,8 +473,12 @@ body.dark-mode #loading-screen {
 
 <!-- Loading Screen -->
 <div id="loading-screen">
-  <img src="assets/loading.gif" alt="Loading...">
+  <div class="loading-content">
+    <p class="loading-text">Đợi chút! Mini PEACE đang sửa soạn...</p>
+    <img src="assets/loading.gif" alt="Loading...">
+  </div>
 </div>
+
 
   <!-- ===== Sparkles overlay (for dark-mode) ===== -->
   <div class="gold-sparkles" id="gold-sparkles"></div>
@@ -1086,23 +1151,27 @@ if (btnCommissionHover && commissionImg) {
   });
 }
 
-
 // LOADING SCREEN!!!
-  document.addEventListener("DOMContentLoaded", () => {
-    const loadingScreen = document.getElementById("loading-screen");
-    
-    window.addEventListener("load", () => {
-      // Thêm class để chạy animation
-      setTimeout(() => {
-        loadingScreen.classList.add("hidden");
-      }, 300);
+document.addEventListener("DOMContentLoaded", () => {
+  const loadingScreen = document.getElementById("loading-screen");
+  if (!loadingScreen) return;
 
-      // Sau khi animation xong thì remove khỏi DOM
+  const startTime = Date.now(); // thời điểm bắt đầu hiển thị loading
+
+  function hideLoading() {
+    const elapsed = Date.now() - startTime;
+    const remaining = 1800 - elapsed; // đảm bảo thời gian loading
+
+    setTimeout(() => {
+      loadingScreen.classList.add("hidden");
       setTimeout(() => {
-        loadingScreen.style.display = "none";
-      }, 1000);
-    });
-  });
+        loadingScreen.remove(); // remove khỏi DOM sau khi fade xong
+      }, 500); // 1s trùng với CSS transition
+    }, remaining > 0 ? remaining : 0);
+  }
+
+  window.addEventListener("load", hideLoading);
+});
 
   </script>
 </body>
