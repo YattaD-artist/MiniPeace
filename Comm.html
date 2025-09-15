@@ -254,10 +254,20 @@ body.popup-open { overflow: hidden; }
     .gmail-icon { position: relative; }
 .discord-icon { position: relative; }
     .copy-note {
-      position: absolute; top: 100%; left: 100%; transform: translateX(-50%);
-      font-size: 12px; color: #f8c365; opacity: 0; pointer-events: none;
-      transition: opacity 0.3s ease; white-space: nowrap; margin-top: 4px;
-    }
+        position: absolute;
+  left: 110%; /* nằm bên phải icon */
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #f27b84;
+  background: rgba(0,0,0,0.7);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
     .gmail-icon.show-note .copy-note { opacity: 1; }
     .discord-icon.show-note .copy-note { opacity: 1; }
     @media (max-width: 768px) {
