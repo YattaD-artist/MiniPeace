@@ -302,6 +302,19 @@ z-index: 10;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);      /* đổ bóng đậm hơn */
 }
 
+/* Link phủ Page5 */
+.page5-link {
+  position: absolute;
+  left: 5%;       /* cách mép trái 5% */
+  right: 25%;     /* còn lại 75% chiều ngang */
+  top: 10%;       /* cách mép trên 10% */
+  bottom: 5%;     /* còn lại 95% chiều dọc */
+  z-index: 999;
+  background: transparent;
+  cursor: url('assets/chi.png') 16 16, pointer;
+}
+
+
 /* Overlay */
 #videoOverlay {
   display: none; /* ẩn mặc định */
@@ -673,6 +686,10 @@ body.dark-mode #loading-screen { background: rgba(0, 5, 15, 1);
       <img id="stuff" src="Page5/stuff.png" alt="Stuff" class="layer" style="z-index: 2;">
       <img id="merch" src="Page5/merch.gif" alt="Merch" class="layer" style="z-index: 1;">
       <img id="bg" src="Page5/bg.png" alt="Bg" class="layer" style="z-index: 0;">
+<!-- Vùng phủ click toàn bộ Page5 -->
+<a href="https://punkgashop.vn/vi/collection/1012" 
+   target="_blank" 
+   class="page5-link"></a>
     </div>
 
   </div> <!-- end .content -->
