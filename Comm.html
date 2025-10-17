@@ -286,6 +286,18 @@ cursor: url('assets/chi.png') 16 16, pointer;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 cursor: url('assets/chi.png') 16 16, pointer;
 }
+.thumb-vertical {
+width: 100%;
+max-width: 100%;
+    aspect-ratio: 1/1.4142;
+  height: auto;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+cursor: url('assets/chi.png') 16 16, pointer;
+
+}
 
 #overlay {
   display: none;
@@ -481,6 +493,11 @@ margin-top: 120px;
   <img class="thumb" src="Gallery/thumb8.png" data-full="Gallery/img8.png" alt="Ảnh 8" data-title="Ảnh minh họa 8" data-desc="Mô tả ngắn về ảnh 8.">
   <img class="thumb" src="Gallery/thumb9.png" data-full="Gallery/img9.png" alt="Ảnh 9" data-title="Ảnh minh họa 9" data-desc="Mô tả ngắn về ảnh 9.">
   <img class="thumb" src="Gallery/thumb10.png" data-full="Gallery/img10.png" alt="Ảnh 10" data-title="Ảnh minh họa 10" data-desc="Mô tả ngắn về ảnh 10.">
+<img class="thumb thumb-vertical" src="Gallery/thumb11.png" data-full="Gallery/img11.png" alt="Ảnh 11" data-title="Ảnh minh họa 11" data-desc="Mô tả ngắn ảnh 11.">
+<img class="thumb thumb-vertical" src="Gallery/thumb12.png" data-full="Gallery/img12.png" alt="Ảnh 12" data-title="Ảnh minh họa 12" data-desc="Mô tả ngắn ảnh 12.">
+<img class="thumb thumb-vertical" src="Gallery/thumb13.png" data-full="Gallery/img13.png" alt="Ảnh 13" data-title="Ảnh minh họa 13" data-desc="Mô tả ngắn ảnh 13.">
+<img class="thumb thumb-vertical" src="Gallery/thumb14.png" data-full="Gallery/img14.png" alt="Ảnh 14" data-title="Ảnh minh họa 14" data-desc="Mô tả ngắn ảnh 14.">
+<img class="thumb thumb-vertical" src="Gallery/thumb15.png" data-full="Gallery/img15.png" alt="Ảnh 15" data-title="Ảnh minh họa 15" data-desc="Mô tả ngắn ảnh 15.">
 </div>
 </div>
 
@@ -730,18 +747,56 @@ document.querySelectorAll('.flag').forEach(flag => {
   flag.addEventListener('click', () => {
     const imgSrc = flag.getAttribute('data-img');
 
-    // Nếu là flag minh họa
+    // Nếu là flag minh họa (flag 4)
     if (imgSrc && imgSrc.includes('minhhoa.png')) {
-      flagImage.style.display = 'none';   // ẩn ảnh đơn
-      gallery.style.display = 'grid';     // hiện gallery
+      flagImage.style.display = 'none';
+      gallery.style.display = 'grid';
       termsLink.style.display = 'none';
+
+      // Gắn thumbnail 1–10
+      gallery.innerHTML = '';
+      for (let i = 1; i <= 10; i++) {
+        const img = document.createElement('img');
+        img.className = 'thumb';
+        img.src = `Gallery/thumb${i}.png`;
+        img.dataset.full = `Gallery/img${i}.png`;
+        img.dataset.title = `Ảnh minh họa ${i}`;
+        img.dataset.desc = `Mô tả ngắn về ảnh ${i}`;
+        img.addEventListener('click', () => openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc));
+        gallery.appendChild(img);
+      }
+
       scrollToFlagImage();
-    } else {
-      gallery.style.display = 'none';     // ẩn gallery khi click flag khác
+    }
+
+    // Nếu là flag truyện (flag 5)
+    else if (imgSrc && imgSrc.includes('truyen.png')) {
+      flagImage.style.display = 'none';
+      gallery.style.display = 'grid';
+      termsLink.style.display = 'none';
+
+      // Gắn thumbnail 11–15
+      gallery.innerHTML = '';
+      for (let i = 11; i <= 15; i++) {
+        const img = document.createElement('img');
+        img.className = 'thumb thumb-vertical';
+        img.src = `Gallery/thumb${i}.png`;
+        img.dataset.full = `Gallery/img${i}.png`;
+        img.dataset.title = `Truyện ${i}`;
+        img.dataset.desc = `Mô tả ngắn về truyện ${i}`;
+        img.addEventListener('click', () => openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc));
+        gallery.appendChild(img);
+      }
+
+      scrollToFlagImage();
+    }
+
+    // Còn lại là các flag khác → xử lý ảnh đơn như cũ
+    else {
+      gallery.style.display = 'none';
       flagImage.style.display = 'block';
       flagImage.src = imgSrc;
 
-      // chỉ hiện link điều khoản nếu là dichvu.png
       if (imgSrc && imgSrc.includes('dichvu.png')) {
         termsLink.style.display = 'block';
       } else {
@@ -757,6 +812,7 @@ document.querySelectorAll('.flag').forEach(flag => {
     }
   });
 });
+
 
 // --- references thêm ---
 const backBtn = document.querySelector('.back-btn'); // nút back hiện tại
