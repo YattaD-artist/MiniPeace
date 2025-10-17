@@ -714,9 +714,18 @@ const closeTermsBtn = document.getElementById('closeTermsBtn');
 
 // helper: scroll tới đầu flagImage
 function scrollToFlagImage() {
-  const rect = flagImage.getBoundingClientRect();
-  const target = window.scrollY + rect.top;
-  window.scrollTo({ top: target, behavior: 'smooth' });
+  const container = document.getElementById('flagImageContainer');
+  const rect = container.getBoundingClientRect();
+  const scrollTop = window.scrollY + rect.top;
+  const containerHeight = rect.height;
+  const viewportHeight = window.innerHeight;
+
+  let targetScroll = scrollTop;
+  if (containerHeight > viewportHeight) {
+    targetScroll += containerHeight - viewportHeight;
+  }
+
+  window.scrollTo({ top: targetScroll, behavior: 'smooth' });
 }
 
 // open/close popup (kèm bù scrollbar để tránh nhảy layout)
@@ -822,10 +831,10 @@ window.addEventListener('scroll', () => {
   const currentScroll = window.scrollY || document.documentElement.scrollTop;
 
   if (currentScroll > lastScrollTop && currentScroll > 100) {
-    // 🫥 Cuộn xuống → ẩn nút
+    // Cuộn xuống → ẩn nút
     backBtn.classList.add('hide');
   } else {
-    // ⬆️ Cuộn lên → hiện nút
+    // Cuộn lên → hiện nút
     backBtn.classList.remove('hide');
   }
 
