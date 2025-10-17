@@ -305,13 +305,36 @@ z-index: 10;
 /* Link phủ Page5 */
 .page5-link {
   position: absolute;
-  left: 5%;       /* cách mép trái 5% */
-  right: 25%;     /* còn lại 75% chiều ngang */
-  top: 10%;       /* cách mép trên 10% */
-  bottom: 5%;     /* còn lại 95% chiều dọc */
+  left: 12%;       /* cách mép trái 12% */
+  right: 32%;     /* còn lại 68% chiều ngang */
+  top: 9%;       /* cách mép trên 9% */
+  bottom: 70%;     /* còn lại 30% chiều dọc */
   z-index: 999;
   background: transparent;
   cursor: url('assets/chi.png') 16 16, pointer;
+}
+.page5-link-item {
+  position: absolute;
+  top: 45%;
+  bottom: 8%;  /* 100 - 92 */
+  z-index: 999;
+  background: transparent;
+  cursor: url('assets/chi.png') 16 16, pointer;
+}
+
+#page5-link-1 {
+  left: 7%;
+  right: 71%;  /* 100 - 29 */
+}
+
+#page5-link-2 {
+  left: 30%;
+  right: 48%;  /* 100 - 52 */
+}
+
+#page5-link-3 {
+  left: 53%;
+  right: 25%;  /* 100 - 75 */
 }
 
 
@@ -686,10 +709,25 @@ body.dark-mode #loading-screen { background: rgba(0, 5, 15, 1);
       <img id="stuff" src="Page5/stuff.png" alt="Stuff" class="layer" style="z-index: 2;">
       <img id="merch" src="Page5/merch.gif" alt="Merch" class="layer" style="z-index: 1;">
       <img id="bg" src="Page5/bg.png" alt="Bg" class="layer" style="z-index: 0;">
-<!-- Vùng phủ click toàn bộ Page5 -->
+<!-- Vùng click trang chính -->
 <a href="https://punkgashop.vn/vi/collection/1012" 
    target="_blank" 
    class="page5-link"></a>
+<!-- Các vùng click riêng -->
+<a href="https://punkgashop.vn/en/collection/1012/product/1028" 
+   target="_blank" 
+   id="page5-link-1" 
+   class="page5-link-item"></a>
+
+<a href="https://punkgashop.vn/en/collection/1012/product/1029" 
+   target="_blank" 
+   id="page5-link-2" 
+   class="page5-link-item"></a>
+
+<a href="https://punkgashop.vn/en/collection/1012/product/1030" 
+   target="_blank" 
+   id="page5-link-3" 
+   class="page5-link-item"></a>
     </div>
 
   </div> <!-- end .content -->
