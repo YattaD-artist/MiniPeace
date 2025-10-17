@@ -77,9 +77,15 @@ body.dark-mode #loading-screen {
       border: none;
       cursor: url('assets/chi.png') 16 16, pointer;
       z-index: 100;
+  transition: opacity 0.3s ease, transform 0.3s ease;
     }
 .back-btn:hover {
   animation: tilt-wiggle 0.6s ease-in-out infinite alternate;
+}
+.back-btn.hide {
+  opacity: 0;
+  transform: translateY(20px); /* trượt nhẹ xuống khi ẩn */
+  pointer-events: none;        /* không bị click khi ẩn */
 }
 
 @keyframes tilt-wiggle {
@@ -142,10 +148,12 @@ canvas.flag {
   position: relative; /* để nút đóng không bị trôi */
   z-index: 10000;     /* chắc chắn nằm trên overlay nền */
 }
-/* Ẩn back-btn khi popup mở */
+/* Ẩn back-btn khi overlay hoặc terms popup mở */
+body.overlay-open .back-btn,
 body.popup-open .back-btn {
   display: none !important;
 }
+
 
 /* table style like docx */
 .terms-table {
@@ -255,6 +263,129 @@ body.popup-open { overflow: hidden; }
   cursor: url('assets/chi.png') 16 16, pointer;
 }
 
+#gallery {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    margin-top: 30px;
+  margin: 30px auto 0;    /* căn giữa */
+  width: 100%;  
+}
+.thumb {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+cursor: url('assets/chi.png') 16 16, pointer;
+}
+.thumb:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+cursor: url('assets/chi.png') 16 16, pointer;
+}
+
+#overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;          /* căn giữa cả ảnh lẫn info */
+  padding: 20px;
+}
+
+.overlay-content {
+  display: flex;
+  align-items: flex-end;         /* phần info dồn xuống dưới */
+  justify-content: center;
+  gap: 30px;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+#fullImage {
+  max-width: 65%;
+  max-height: 90vh;
+  object-fit: contain;
+  display: block;
+}
+
+#imageInfo {
+  width: 300px;                  /* cố định chiều ngang */
+  background-color: rgba(255, 250, 240, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;     /* dồn nội dung xuống sát đáy */
+  padding: 20px;
+  text-align: justify;          /* căn đều 2 bên */
+  overflow-y: auto;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+#imageInfo h2 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #ff7a7a;
+}
+
+#imageInfo p {
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+#overlay button {
+  position: absolute;
+  top: 30px;
+  right: 50px;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: url('assets/chi.png') 16 16, pointer;
+}
+
+/* 📱 Responsive cho điện thoại */
+@media (max-width: 768px) {
+  #gallery {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    padding: 15px;
+    max-width: 95vw;  /* co lại khi màn nhỏ */
+  }
+  .overlay-content {
+    flex-direction: column;       /* Info xuống dưới ảnh */
+    align-items: center;
+    gap: 15px;
+    max-width: 100%;
+    max-height: 100%;
+
+  }
+
+  #fullImage {
+    max-width: 100%;
+    max-height: 60vh;
+  }
+
+  #imageInfo {
+    width: 100%;
+    max-height: 40vh;
+    padding: 15px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  #overlay button {
+    top: 15px;
+    right: 15px;
+    font-size: 1.8rem;
+  }
+}
 
 
     /* --- floating icons --- */
@@ -335,10 +466,38 @@ margin-top: 120px;
     <canvas class="flag" data-src="Comm/flag6.png" data-img="Comm/thanhtoan.png"></canvas>
   </div>
 
-  <!-- chỗ hiện ảnh thay đổi -->
-  <div id="flagImageContainer" style="margin-top:20px;">
-    <img id="flagImage" src="" alt="" </div>
+<div id="flagImageContainer" style="margin-top:20px;">
+  <img id="flagImage" src="" alt="">
+
+  <!-- Gallery (ẩn mặc định) -->
+  <div id="gallery" style="display:none;">
+  <img class="thumb" src="Gallery/thumb1.png" data-full="Gallery/img1.png" alt="Ảnh 1" data-title="Ảnh minh họa 1" data-desc="Khóc trên hồ, phía sau là thác. Hu hu hu hu....">
+  <img class="thumb" src="Gallery/thumb2.png" data-full="Gallery/img2.png" alt="Ảnh 2" data-title="Ảnh minh họa 2" data-desc="Mô tả ngắn về ảnh 2.">
+  <img class="thumb" src="Gallery/thumb3.png" data-full="Gallery/img3.png" alt="Ảnh 3" data-title="Ảnh minh họa 3" data-desc="Mô tả ngắn về ảnh 3.">
+  <img class="thumb" src="Gallery/thumb4.png" data-full="Gallery/img4.png" alt="Ảnh 4" data-title="Ảnh minh họa 4" data-desc="Mô tả ngắn về ảnh 4.">
+  <img class="thumb" src="Gallery/thumb5.png" data-full="Gallery/img5.png" alt="Ảnh 5" data-title="Ảnh minh họa 5" data-desc="Mô tả ngắn về ảnh 5.">
+  <img class="thumb" src="Gallery/thumb6.png" data-full="Gallery/img6.png" alt="Ảnh 6" data-title="Ảnh minh họa 6" data-desc="Mô tả ngắn về ảnh 6.">
+  <img class="thumb" src="Gallery/thumb7.png" data-full="Gallery/img7.png" alt="Ảnh 7" data-title="Ảnh minh họa 7" data-desc="Mô tả ngắn về ảnh 7.">
+  <img class="thumb" src="Gallery/thumb8.png" data-full="Gallery/img8.png" alt="Ảnh 8" data-title="Ảnh minh họa 8" data-desc="Mô tả ngắn về ảnh 8.">
+  <img class="thumb" src="Gallery/thumb9.png" data-full="Gallery/img9.png" alt="Ảnh 9" data-title="Ảnh minh họa 9" data-desc="Mô tả ngắn về ảnh 9.">
+  <img class="thumb" src="Gallery/thumb10.png" data-full="Gallery/img10.png" alt="Ảnh 10" data-title="Ảnh minh họa 10" data-desc="Mô tả ngắn về ảnh 10.">
+</div>
+</div>
+
 <span id="termsLink">Xem chi tiết điều khoản dịch vụ</span>
+
+<!-- Overlay để xem ảnh chi tiết -->
+<div id="overlay">
+  <div class="overlay-content">
+    <img id="fullImage" src="" alt="">
+    <div id="imageInfo">
+      <h2 id="imgTitle"></h2>
+      <p id="imgDesc"></p>
+    </div>
+  </div>
+  <button onclick="closeOverlay()">✕</button>
+</div>
+
 
 </div>
 
@@ -565,37 +724,111 @@ termsPopup.addEventListener('click', (e) => {
 closeTermsBtn.addEventListener('click', closeTermsPopup);
 window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTermsPopup(); });
 
-// Flag click handling
+const gallery = document.getElementById('gallery');
+
 document.querySelectorAll('.flag').forEach(flag => {
   flag.addEventListener('click', () => {
     const imgSrc = flag.getAttribute('data-img');
 
-    // show image container and set src
-    flagImage.style.display = 'block';
-    flagImage.src = imgSrc;
-
-    // only show terms link for dichvu.png
-    if (imgSrc && imgSrc.includes('dichvu.png')) {
-      termsLink.style.display = 'block';
-    } else {
+    // Nếu là flag minh họa
+    if (imgSrc && imgSrc.includes('minhhoa.png')) {
+      flagImage.style.display = 'none';   // ẩn ảnh đơn
+      gallery.style.display = 'grid';     // hiện gallery
       termsLink.style.display = 'none';
-    }
-
-    // scroll to top of image even if cached
-    if (flagImage.complete && flagImage.naturalHeight !== 0) {
       scrollToFlagImage();
     } else {
-      // if not loaded yet, scroll when loaded
-      flagImage.onload = () => {
+      gallery.style.display = 'none';     // ẩn gallery khi click flag khác
+      flagImage.style.display = 'block';
+      flagImage.src = imgSrc;
+
+      // chỉ hiện link điều khoản nếu là dichvu.png
+      if (imgSrc && imgSrc.includes('dichvu.png')) {
+        termsLink.style.display = 'block';
+      } else {
+        termsLink.style.display = 'none';
+      }
+
+      if (flagImage.complete && flagImage.naturalHeight !== 0) {
         scrollToFlagImage();
-      };
-      // fallback in case onload doesn't fire (rare)
-      setTimeout(() => {
-        scrollToFlagImage();
-      }, 300);
+      } else {
+        flagImage.onload = () => scrollToFlagImage();
+        setTimeout(() => scrollToFlagImage(), 300);
+      }
     }
   });
 });
+
+// --- references thêm ---
+const backBtn = document.querySelector('.back-btn'); // nút back hiện tại
+let lastScrollTop = 0;
+
+window.addEventListener('scroll', () => {
+  const currentScroll = window.scrollY || document.documentElement.scrollTop;
+
+  if (currentScroll > lastScrollTop && currentScroll > 100) {
+    // 🫥 Cuộn xuống → ẩn nút
+    backBtn.classList.add('hide');
+  } else {
+    // ⬆️ Cuộn lên → hiện nút
+    backBtn.classList.remove('hide');
+  }
+
+  lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // tránh giá trị âm
+});
+
+const overlay = document.getElementById('overlay');
+const fullImage = document.getElementById('fullImage');
+const imgTitle = document.getElementById('imgTitle');
+const imgDesc = document.getElementById('imgDesc');
+
+// mở overlay (dùng khi click thumbnail)
+function openOverlay(fullSrc, title, desc) {
+  fullImage.src = fullSrc || '';
+  imgTitle.textContent = title || '';
+  imgDesc.textContent = desc || '';
+
+  // show overlay và thêm class để ẩn back-btn bằng CSS
+  overlay.style.display = 'flex';
+  document.body.classList.add('overlay-open');
+
+  // optional: khóa scroll nền nếu muốn
+  // document.body.style.overflow = 'hidden';
+}
+
+// đóng overlay
+function closeOverlay() {
+  overlay.style.display = 'none';
+  document.body.classList.remove('overlay-open');
+  // document.body.style.overflow = ''; // nếu dùng khóa scroll
+  fullImage.src = ''; // giải phóng memory / stop tải
+}
+
+// gán event cho thumbnails
+document.querySelectorAll('.thumb').forEach(thumb => {
+  thumb.addEventListener('click', () => {
+    const fullSrc = thumb.dataset.full || thumb.src;
+    openOverlay(fullSrc, thumb.dataset.title || '', thumb.dataset.desc || '');
+  });
+});
+
+// đóng khi click nền overlay (ngoài image/info)
+overlay.addEventListener('click', (e) => {
+  if (e.target === overlay) closeOverlay();
+});
+
+// đóng bằng nút đóng trong DOM (nếu dùng button có onclick trước đó, giữ nguyên hoặc gán)
+const overlayCloseBtn = overlay.querySelector('button');
+if (overlayCloseBtn) {
+  overlayCloseBtn.addEventListener('click', closeOverlay);
+}
+
+// đóng bằng Escape
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && overlay.style.display === 'flex') {
+    closeOverlay();
+  }
+});
+
 
 // open popup when clicking the terms link
 
@@ -609,6 +842,22 @@ function closePopup() {
   document.getElementById("termsPopup").style.display = "none";
   document.body.classList.remove("popup-open");
 }
+
+const imageInfo = document.getElementById('imageInfo');
+
+// Khi ảnh full load xong thì set chiều cao info bằng ảnh
+fullImage.addEventListener('load', () => {
+  // Lấy chiều cao thực tế của ảnh trong overlay
+  const imgHeight = fullImage.getBoundingClientRect().height;
+  imageInfo.style.height = imgHeight + 'px';
+});
+
+// Khi đóng overlay thì reset lại chiều cao
+overlay.addEventListener('transitionend', () => {
+  if (overlay.style.display === 'none') {
+    imageInfo.style.height = '';
+  }
+});
 
   </script>
 </body>
