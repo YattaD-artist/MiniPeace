@@ -359,6 +359,7 @@ body.popup-open .back-btn { display: none !important; }
   font-size: 1rem;
   text-align: left;
   margin-bottom: 35px;
+color: #0f0f0f;
 }
 
 #overlay button {
@@ -685,76 +686,105 @@ body.overlay-open .floating-icons {
   </div>
 </div>
 
+<script>
+/* ============================================================
+   🏳️ CODE A — Hiệu ứng cờ bay (Waving Flags)
+============================================================ */
+class WavingFlag {
+  constructor(canvas, src) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.img = new Image();
+    this.img.src = src;
+    this.img.onload = () => {
+      this.canvas.width = this.img.width;
+      this.canvas.height = this.img.height;
+      this.start();
+    };
+    this.time = 0;
+  }
 
-  <script>
-    /* waving flags (Code A) */
-    class WavingFlag {
-      constructor(canvas, src) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.img = new Image();
-        this.img.src = src;
-        this.img.onload = () => {
-          this.canvas.width = this.img.width;
-          this.canvas.height = this.img.height;
-          this.start();
-        };
-        this.time = 0;
-      }
-      start() {
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
-        requestAnimationFrame(() => this.animate());
-      }
-      animate() {
-        const ctx = this.ctx;
-        const { width, height } = this;
-        ctx.clearRect(0, 0, width, height);
-        let topHeight = height * 0.2;
-        let waveHeight = height - topHeight;
-        ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height * (topHeight / height), 0, 0, width, topHeight);
-        let syStart = this.img.height * (topHeight / height);
-        let sh = this.img.height - syStart;
-        let rowHeight = 15;
-        let rowCount = Math.floor(waveHeight / rowHeight);
-        for (let y = 0; y < rowCount; y++) {
-          let progress = y / rowCount;
-          let offset = Math.sin(this.time * 1.5 + y * 0.25) * 2 * progress;
-          ctx.drawImage(this.img, 0, syStart + (sh * y / rowCount), this.img.width, sh / rowCount,
-            offset, topHeight + y * rowHeight, width, rowHeight);
-        }
-        this.time += 0.025;
-        requestAnimationFrame(() => this.animate());
-      }
+  start() {
+    this.width = this.canvas.width;
+    this.height = this.canvas.height;
+    requestAnimationFrame(() => this.animate());
+  }
+
+  animate() {
+    const ctx = this.ctx;
+    const { width, height } = this;
+    ctx.clearRect(0, 0, width, height);
+
+    let topHeight = height * 0.2;
+    let waveHeight = height - topHeight;
+
+    // phần trên cố định
+    ctx.drawImage(
+      this.img, 0, 0, this.img.width, this.img.height * (topHeight / height),
+      0, 0, width, topHeight
+    );
+
+    // phần thân cờ uốn sóng
+    let syStart = this.img.height * (topHeight / height);
+    let sh = this.img.height - syStart;
+    let rowHeight = 15;
+    let rowCount = Math.floor(waveHeight / rowHeight);
+
+    for (let y = 0; y < rowCount; y++) {
+      let progress = y / rowCount;
+      let offset = Math.sin(this.time * 1.5 + y * 0.25) * 2 * progress;
+      ctx.drawImage(
+        this.img,
+        0, syStart + (sh * y / rowCount), this.img.width, sh / rowCount,
+        offset, topHeight + y * rowHeight, width, rowHeight
+      );
     }
-    document.querySelectorAll('canvas.flag').forEach(c => new WavingFlag(c, c.getAttribute('data-src')));
-    window.addEventListener('load', () => {
-      if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
-    });
+
+    this.time += 0.025;
+    requestAnimationFrame(() => this.animate());
+  }
+}
+
+// Áp dụng hiệu ứng lên tất cả canvas có class .flag
+document.querySelectorAll('canvas.flag')
+  .forEach(c => new WavingFlag(c, c.getAttribute('data-src')));
 
 
-    /* copy helpers */
-    window.copyEmail = el => {
-      navigator.clipboard.writeText("ttien39169@gmail.com").then(() => {
-        el.classList.add("show-note");
-        setTimeout(() => el.classList.remove("show-note"), 2000);
-      });
-    };
-    window.copyDiscord = el => {
-      navigator.clipboard.writeText("tienmai334").then(() => {
-        el.classList.add("show-note");
-        setTimeout(() => el.classList.remove("show-note"), 2000);
-      });
-    };
+/* ============================================================
+   🌙 Theme — Dark Mode lưu bằng localStorage
+============================================================ */
+window.addEventListener('load', () => {
+  if (localStorage.getItem('theme') === 'dark')
+    document.body.classList.add('dark-mode');
+});
 
 
-// references
+/* ============================================================
+   📋 Copy Email / Discord (Copy Helpers)
+============================================================ */
+window.copyEmail = el => {
+  navigator.clipboard.writeText("ttien39169@gmail.com").then(() => {
+    el.classList.add("show-note");
+    setTimeout(() => el.classList.remove("show-note"), 2000);
+  });
+};
+window.copyDiscord = el => {
+  navigator.clipboard.writeText("tienmai334").then(() => {
+    el.classList.add("show-note");
+    setTimeout(() => el.classList.remove("show-note"), 2000);
+  });
+};
+
+
+/* ============================================================
+   📄 Điều khoản (Terms Popup)
+============================================================ */
 const flagImage = document.getElementById('flagImage');
 const termsLink = document.getElementById('termsLink');
 const termsPopup = document.getElementById('termsPopup');
 const closeTermsBtn = document.getElementById('closeTermsBtn');
 
-// helper: scroll tới đầu flagImage
+// Cuộn tới phần flagImage
 function scrollToFlagImage() {
   const container = document.getElementById('flagImageContainer');
   const rect = container.getBoundingClientRect();
@@ -763,21 +793,24 @@ function scrollToFlagImage() {
   const viewportHeight = window.innerHeight;
 
   let targetScroll = scrollTop;
-  if (containerHeight > viewportHeight) {
+  if (containerHeight > viewportHeight)
     targetScroll += containerHeight - viewportHeight;
-  }
 
   window.scrollTo({ top: targetScroll, behavior: 'smooth' });
 }
 
-// open/close popup (kèm bù scrollbar để tránh nhảy layout)
+// Mở popup
 function openTermsPopup() {
   const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
-  if (scrollBarWidth > 0) document.body.style.paddingRight = scrollBarWidth + 'px';
+  if (scrollBarWidth > 0)
+    document.body.style.paddingRight = scrollBarWidth + 'px';
+
   document.body.classList.add('popup-open');
   termsPopup.style.display = 'flex';
   termsPopup.setAttribute('aria-hidden', 'false');
 }
+
+// Đóng popup
 function closeTermsPopup() {
   termsPopup.style.display = 'none';
   termsPopup.setAttribute('aria-hidden', 'true');
@@ -785,26 +818,43 @@ function closeTermsPopup() {
   document.body.style.paddingRight = '';
 }
 
-// click outside to close
-termsPopup.addEventListener('click', (e) => {
+// Click ra ngoài popup để đóng
+termsPopup.addEventListener('click', e => {
   if (e.target === termsPopup) closeTermsPopup();
 });
 closeTermsBtn.addEventListener('click', closeTermsPopup);
-window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTermsPopup(); });
 
+// ESC để đóng
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeTermsPopup();
+});
+
+// Liên kết mở popup
+termsLink.addEventListener('click', openTermsPopup);
+
+// Các hàm mở/đóng khác (tương thích code cũ)
+function openPopup() {
+  document.getElementById("termsPopup").style.display = "flex";
+  document.body.classList.add("popup-open");
+}
+function closePopup() {
+  document.getElementById("termsPopup").style.display = "none";
+  document.body.classList.remove("popup-open");
+}
+
+
+/* ============================================================
+   🖼️ Xử lý hiển thị Gallery & Flag
+============================================================ */
 const gallery = document.getElementById('gallery');
 
 document.querySelectorAll('.flag').forEach(flag => {
   flag.addEventListener('click', () => {
     const imgSrc = flag.getAttribute('data-img');
-
-    // Lấy tất cả ảnh trong gallery
     const allImgs = document.querySelectorAll('#gallery img');
-
-    // Ẩn tất cả ảnh trước
     allImgs.forEach(img => img.style.display = 'none');
 
-    // --- FLAG 4: ảnh minh họa (img1 → img10)
+    // FLAG 4: Ảnh minh họa (img1 → img10)
     if (imgSrc && imgSrc.includes('minhhoa.png')) {
       flagImage.style.display = 'none';
       gallery.style.display = 'grid';
@@ -812,22 +862,20 @@ document.querySelectorAll('.flag').forEach(flag => {
       termsLink.style.display = 'none';
 
       allImgs.forEach((img, index) => {
-        if (index >= 0 && index < 10) img.style.display = 'block'; // img1 - img10
+        if (index >= 0 && index < 10) img.style.display = 'block';
       });
 
-      // Gắn click mở overlay
       allImgs.forEach(img => {
         img.onclick = () => {
-          if (img.style.display !== 'none') {
+          if (img.style.display !== 'none')
             openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc);
-          }
         };
       });
 
       scrollToFlagImage();
     }
 
-    // --- FLAG 5: ảnh truyện (img11 → img16)
+    // FLAG 5: Ảnh truyện (img11 → img16)
     else if (imgSrc && imgSrc.includes('truyen.png')) {
       flagImage.style.display = 'none';
       gallery.style.display = 'grid';
@@ -835,35 +883,33 @@ document.querySelectorAll('.flag').forEach(flag => {
       termsLink.style.display = 'none';
 
       allImgs.forEach((img, index) => {
-        if (index >= 10 && index < 16) img.style.display = 'block'; // img11 - img16
+        if (index >= 10 && index < 16) img.style.display = 'block';
       });
 
       allImgs.forEach(img => {
         img.onclick = () => {
-          if (img.style.display !== 'none') {
+          if (img.style.display !== 'none')
             openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc);
-          }
         };
       });
 
       scrollToFlagImage();
     }
 
-    // --- Các flag khác
+    // Các flag khác
     else {
       gallery.style.display = 'none';
       flagImage.style.display = 'block';
       flagImage.src = imgSrc;
 
-      if (imgSrc && imgSrc.includes('dichvu.png')) {
+      if (imgSrc && imgSrc.includes('dichvu.png'))
         termsLink.style.display = 'block';
-      } else {
+      else
         termsLink.style.display = 'none';
-      }
 
-      if (flagImage.complete && flagImage.naturalHeight !== 0) {
+      if (flagImage.complete && flagImage.naturalHeight !== 0)
         scrollToFlagImage();
-      } else {
+      else {
         flagImage.onload = () => scrollToFlagImage();
         setTimeout(() => scrollToFlagImage(), 300);
       }
@@ -872,58 +918,53 @@ document.querySelectorAll('.flag').forEach(flag => {
 });
 
 
-// --- references thêm ---
-const backBtn = document.querySelector('.back-btn'); // nút back hiện tại
+/* ============================================================
+   🔙 Ẩn / hiện nút Back khi cuộn
+============================================================ */
+const backBtn = document.querySelector('.back-btn');
 let lastScrollTop = 0;
 
 window.addEventListener('scroll', () => {
   const currentScroll = window.scrollY || document.documentElement.scrollTop;
 
-  if (currentScroll > lastScrollTop && currentScroll > 100) {
-    // Cuộn xuống → ẩn nút
-    backBtn.classList.add('hide');
-  } else {
-    // Cuộn lên → hiện nút
-    backBtn.classList.remove('hide');
-  }
+  if (currentScroll > lastScrollTop && currentScroll > 100)
+    backBtn.classList.add('hide'); // cuộn xuống → ẩn nút
+  else
+    backBtn.classList.remove('hide'); // cuộn lên → hiện lại
 
-  lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // tránh giá trị âm
+  lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
 });
 
+
+/* ============================================================
+   🪟 Overlay (Mở ảnh full + mô tả)
+============================================================ */
 const overlay = document.getElementById('overlay');
 const floatingIcons = document.querySelector('.floating-icons');
 const fullImage = document.getElementById('fullImage');
 const imgTitle = document.getElementById('imgTitle');
 const imgDesc = document.getElementById('imgDesc');
 
-// mở overlay (dùng khi click thumbnail)
+// Mở overlay khi click thumbnail
 function openOverlay(fullSrc, title, desc) {
   fullImage.src = fullSrc || '';
   imgTitle.textContent = title || '';
   imgDesc.textContent = desc || '';
 
-  // show overlay và thêm class để ẩn back-btn bằng CSS
   overlay.style.display = 'flex';
   document.body.classList.add('overlay-open');
-
-  // optional: khóa scroll nền nếu muốn
-  // document.body.style.overflow = 'hidden';
-
-  // Ẩn bộ icon dọc khi overlay mở
   if (floatingIcons) floatingIcons.style.display = 'none';
 }
 
-// đóng overlay
+// Đóng overlay
 function closeOverlay() {
   overlay.style.display = 'none';
   document.body.classList.remove('overlay-open');
-  // document.body.style.overflow = ''; // nếu dùng khóa scroll
-  fullImage.src = ''; // giải phóng memory / stop tải
-  // Hiện lại bộ icon dọc khi overlay tắt
+  fullImage.src = '';
   if (floatingIcons) floatingIcons.style.display = 'flex';
 }
 
-// gán event cho thumbnails
+// Click thumbnail → mở overlay
 document.querySelectorAll('.thumb').forEach(thumb => {
   thumb.addEventListener('click', () => {
     const fullSrc = thumb.dataset.full || thumb.src;
@@ -931,55 +972,42 @@ document.querySelectorAll('.thumb').forEach(thumb => {
   });
 });
 
-// đóng khi click nền overlay (ngoài image/info)
-overlay.addEventListener('click', (e) => {
+// Click nền để đóng overlay
+overlay.addEventListener('click', e => {
   if (e.target === overlay) closeOverlay();
 });
 
-// đóng bằng nút đóng trong DOM (nếu dùng button có onclick trước đó, giữ nguyên hoặc gán)
+// Nút đóng trong overlay
 const overlayCloseBtn = overlay.querySelector('button');
-if (overlayCloseBtn) {
+if (overlayCloseBtn)
   overlayCloseBtn.addEventListener('click', closeOverlay);
-}
 
-// đóng bằng Escape
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && overlay.style.display === 'flex') {
+// ESC để đóng overlay
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && overlay.style.display === 'flex')
     closeOverlay();
-  }
 });
 
 
-// open popup when clicking the terms link
-
-termsLink.addEventListener('click', openTermsPopup);
-function openPopup() {
-  document.getElementById("termsPopup").style.display = "flex";
-  document.body.classList.add("popup-open");
-}
-
-function closePopup() {
-  document.getElementById("termsPopup").style.display = "none";
-  document.body.classList.remove("popup-open");
-}
-
+/* ============================================================
+   ℹ️ Đồng bộ chiều cao mô tả (imageInfo) với ảnh
+============================================================ */
 const imageInfo = document.getElementById('imageInfo');
 
-// Khi ảnh full load xong thì set chiều cao info bằng ảnh
 fullImage.addEventListener('load', () => {
-  // Lấy chiều cao thực tế của ảnh trong overlay
   const imgHeight = fullImage.getBoundingClientRect().height;
   imageInfo.style.height = imgHeight + 'px';
 });
 
-// Khi đóng overlay thì reset lại chiều cao
 overlay.addEventListener('transitionend', () => {
-  if (overlay.style.display === 'none') {
+  if (overlay.style.display === 'none')
     imageInfo.style.height = '';
-  }
 });
 
-/* --- PRELOAD TOÀN BỘ ẢNH FULL GALLERY --- */
+
+/* ============================================================
+   ⚙️ Preload toàn bộ ảnh trong gallery
+============================================================ */
 window.addEventListener('load', () => {
   const fullImages = document.querySelectorAll('#gallery img[data-full]');
   fullImages.forEach(img => {
@@ -987,7 +1015,7 @@ window.addEventListener('load', () => {
     preload.src = img.dataset.full;
   });
 });
+</script>
 
-  </script>
 </body>
 </html>
