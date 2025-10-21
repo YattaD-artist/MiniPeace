@@ -9,118 +9,155 @@
   <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
+/* =====================================================
+   🎨 RESET + TOÀN CỤC
+===================================================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
   overflow-y: scroll;
-      font-family: 'Segoe UI', sans-serif;
-      background: repeating-linear-gradient(90deg, #dbeafe 0 20px, #bfdbfe 20px 40px),
-                  repeating-linear-gradient(0deg, #dbeafe 0 20px, #bfdbfe 20px 40px);
-      background-blend-mode: overlay;
-      min-height: 100vh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      text-align: center;
-      padding: 40px 20px 20px;
-      cursor: url('assets/tay.png') 16 16, default;
-    }
+  font-family: 'Segoe UI', sans-serif;
+  background: repeating-linear-gradient(90deg, #dbeafe 0 20px, #bfdbfe 20px 40px),
+              repeating-linear-gradient(0deg, #dbeafe 0 20px, #bfdbfe 20px 40px);
+  background-blend-mode: overlay;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px 20px;
+  cursor: url('assets/tay.png') 16 16, default;
+}
 
-    /*.element-grab { cursor: url('assets/cam.png'), grab; }
-    .element-grabbing { cursor: url('assets/nam.png'), grabbing; }*/
+/* =====================================================
+   🌙 DARK MODE
+===================================================== */
+body.dark-mode {
+  background:
+    linear-gradient(to right, rgba(15,23,42,0.9), rgba(30,41,59,0.9)),
+    repeating-linear-gradient(90deg, #dbeafe 0 20px, #bfdbfe 20px 40px),
+    repeating-linear-gradient(0deg, #dbeafe 0 20px, #bfdbfe 20px 40px);
+  background-blend-mode: multiply;
+  color: #e2e8f0;
+}
 
-    .content {
-      position: relative;
-      z-index: 2;
-      background-color: rgba(255, 250, 240, 0.7);
-      padding: 0px;
-      margin: 0;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-      max-width: 90vw;
-      min-width: 320px;
-      overflow: hidden;
-    }
+body.dark-mode #loading-screen { background: #0b0f1a; }
+body.dark-mode .content { background-color: rgba(0, 5, 15, 0.7); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); }
+body.dark-mode .copy-note { color: #f8c365; }
+body.dark-mode .floating-icons a { color: #f8c365; }
+body.dark-mode .floating-icons a:hover { color: #f27b84; }
+
+/* =====================================================
+   📦 NỘI DUNG CHÍNH
+===================================================== */
+.content {
+  position: relative;
+  z-index: 2;
+  background-color: rgba(255, 250, 240, 0.7);
+  padding: 0;
+  margin: 0;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  max-width: 90vw;
+  min-width: 320px;
+  overflow: hidden;
+}
+
+/* =====================================================
+   🖼️ ẢNH TRANG CHÍNH
+===================================================== */
+.main-image {
+  margin: 20px auto 0;
+  width: 65%;
+  height: auto;
+  display: block;
+}
 
 #flagImage[src="Comm/dichvu.png"] {
-  width: 70vw;   /* chiếm 70% chiều ngang màn hình */
-  height: auto;  /* giữ tỉ lệ gốc */
+  width: 70vw;
+  height: auto;
   display: block;
-  margin: 10vh auto 0; /* cách trên 20px, căn giữa ngang */
+  margin: 10vh auto 0;
 }
+
 #flagImage[src="Comm/quytrinh.png"] {
-  width: 80vw;   /* hoặc giá trị bạn muốn */
+  width: 80vw;
   height: auto;
   display: block;
   cursor: url('assets/chi.png') 16 16, pointer;
-  margin: 5vh auto 30px; /* khoảng cách trên dưới */
+  margin: 5vh auto 30px;
 }
 
-
-body.dark-mode #loading-screen {
-  background: #0b0f1a; /* nền dark mode */
-}
-
-.main-image {
-  margin: 20px auto 0;   /* auto left-right để căn giữa */
-  width: 65%;            /* 65% chiều ngang container */
+#flagImage[src="Comm/gia.png"] {
+  width: 100%;
+  max-width: 100%;
   height: auto;
-  display: block;        /* để margin auto hoạt động */
+  display: block;
+  cursor: url('assets/chi.png') 16 16, pointer;
 }
-    .back-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 9vw;
-      height: 9vh;
-      background: url('Comm/back.png') no-repeat center center;
-      background-size: contain;
-      border: none;
-      cursor: url('assets/chi.png') 16 16, pointer;
-      z-index: 100;
+
+/* =====================================================
+   🔙 NÚT QUAY LẠI
+===================================================== */
+.back-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 9vw;
+  height: 9vh;
+  background: url('Comm/back.png') no-repeat center center;
+  background-size: contain;
+  border: none;
+  cursor: url('assets/chi.png') 16 16, pointer;
+  z-index: 100;
   transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-.back-btn:hover {
-  animation: tilt-wiggle 0.6s ease-in-out infinite alternate;
 }
+.back-btn:hover { animation: tilt-wiggle 0.6s ease-in-out infinite alternate; }
 .back-btn.hide {
   opacity: 0;
-  transform: translateY(20px); /* trượt nhẹ xuống khi ẩn */
-  pointer-events: none;        /* không bị click khi ẩn */
+  transform: translateY(20px);
+  pointer-events: none;
 }
 
+/* Hiệu ứng nghiêng */
 @keyframes tilt-wiggle {
-  0%   { transform: rotate(0deg); }
-  50%  { transform: rotate(-8deg); } /* nghiêng trái */
-  100% { transform: rotate(8deg); }  /* nghiêng phải */
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(-8deg); }
+  100% { transform: rotate(8deg); }
 }
 
+/* =====================================================
+   🇻🇳 MENU CỜ
+===================================================== */
 .menu {
-  margin: 40px auto 0;   /* căn giữa cả khối menu */
+  margin: 40px auto 0;
   display: flex;
-  justify-content: center; /* căn giữa các cờ */
-  gap: 20px;               /* khoảng cách giữa các cờ */
-  flex-wrap: wrap;         /* nếu màn hình hẹp thì xuống dòng */
-  width: auto;             /* không ép 90vw nữa */
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: auto;
 }
 
 canvas.flag {
-  width: 15%;      /* mỗi lá cờ chiếm 15% container cha */
-  min-width: 80px; /* đảm bảo không quá nhỏ khi màn nhỏ */
+  width: 15%;
+  min-width: 80px;
   height: auto;
-    cursor: url('assets/chi.png') 16 16, pointer;
+  cursor: url('assets/chi.png') 16 16, pointer;
 }
 
-/* link điều khoản (ẩn mặc định) */
+/* =====================================================
+   📄 LINK + POPUP ĐIỀU KHOẢN
+===================================================== */
 #termsLink {
   display: none;
   margin: 20px auto 80px;
   color: #ff3314;
   font-weight: 700;
-    cursor: url('assets/chi.png') 16 16, pointer;
   text-decoration: underline;
+  cursor: url('assets/chi.png') 16 16, pointer;
 }
 
-/* popup overlay */
+/* Overlay popup */
 #termsPopup {
   position: fixed;
   inset: 0;
@@ -129,10 +166,9 @@ canvas.flag {
   justify-content: center;
   background: rgba(0,0,0,0.6);
   z-index: 9999;
-    cursor: url('assets/chi.png') 16 16, pointer;
+  cursor: url('assets/chi.png') 16 16, pointer;
 }
 
-/* popup content */
 #termsPopup .popup-content {
   background: #fff;
   color: #111;
@@ -145,17 +181,15 @@ canvas.flag {
   text-align: left;
   line-height: 1.7;
   font-size: 18px;
-  position: relative; /* để nút đóng không bị trôi */
-  z-index: 10000;     /* chắc chắn nằm trên overlay nền */
+  position: relative;
+  z-index: 10000;
 }
-/* Ẩn back-btn khi overlay hoặc terms popup mở */
+
+/* Ẩn nút quay lại khi popup/overlay mở */
 body.overlay-open .back-btn,
-body.popup-open .back-btn {
-  display: none !important;
-}
+body.popup-open .back-btn { display: none !important; }
 
-
-/* table style like docx */
+/* Bảng kiểu docx */
 .terms-table {
   width: 100%;
   border-collapse: collapse;
@@ -167,12 +201,52 @@ body.popup-open .back-btn {
   padding: 8px 10px;
   vertical-align: top;
 }
-.terms-table th {
-  background: #f5f5f5;
+.terms-table th { background: #f5f5f5; font-weight: 700; }
+
+/* Tiêu đề chính */
+#termsTitle {
+  text-align: center;
+  margin: 2.5rem 0 2rem;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+/* Tiêu đề mục con */
+#terms h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.7rem;
+  font-size: 1.4rem;
   font-weight: 700;
 }
 
-/* close button */
+/* Danh sách */
+#terms ul {
+  margin: 0 0 1.5rem 1.5rem;
+  line-height: 1.6;
+}
+
+/* Bảng chi tiết */
+#terms .terms-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 2rem;
+}
+#terms .terms-table th,
+#terms .terms-table td {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  text-align: left;
+}
+#terms .terms-table th {
+  background: #ef9ab2;
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+}
+#terms .terms-table tbody tr:nth-child(even) { background-color: #fafafa; }
+#terms .terms-table tbody tr:hover { background-color: #d2e5f3; }
+
+/* Nút đóng popup */
 .popup-close {
   display: flex;
   justify-content: flex-end;
@@ -184,133 +258,55 @@ body.popup-open .back-btn {
   border: none;
   padding: 8px 12px;
   border-radius: 6px;
-    cursor: url('assets/chi.png') 16 16, pointer;
   font-weight: 700;
-}
-
-/* make content readable on small screens */
-@media (max-width:600px){
-  #termsPopup .popup-content { padding: 14px; font-size: 14px; }
-}
-
-/* prevent background scroll when popup open */
-body.popup-open { overflow: hidden; }
-/* Tiêu đề chính */
-#termsTitle {
-  text-align: center;       /* căn giữa */
-  margin: 2.5rem 0 2rem;    /* khoảng cách trên dưới rộng hơn */
-  font-size: 2.5rem;          /* chữ to hơn */
-  font-weight: bold;
-}
-
-/* Tiêu đề mục con (1,2,3...) */
-#terms h3 {
-  margin-top: 2rem;         /* cách xa mục trên */
-  margin-bottom: 0.7rem;      /* tạo khoảng thở bên dưới */
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-/* Danh sách nội dung */
-#terms ul {
-  margin: 0 0 1.5rem 1.5rem; /* thụt vào và cách dưới */
-  line-height: 1.6;          /* giãn dòng dễ đọc */
-}
-
-/* Bảng */
-#terms .terms-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0 2rem;       /* cách trên dưới rộng hơn */
-}
-
-#terms .terms-table th,
-#terms .terms-table td {
-  border: 1px solid #ddd;
-  padding: 0.75rem;
-  text-align: left;
-}
-
-#terms .terms-table th {
-  background-color: #f8f8f8;
-  font-weight: 600;
-}
-
-/* Tô nền nhẹ cho dòng xen kẽ */
-#terms .terms-table tbody tr:nth-child(even) {
-  background-color: #fafafa;
-}
-
-#terms .terms-table th,
-#terms .terms-table td {
-  border: 1px solid #ccc;
-  padding: 0.75rem;
-}
-#terms .terms-table tbody tr:hover {
-  background-color: #d2e5f3; /* highlight khi hover */
-}
-#terms .terms-table th {
-  background: #ef9ab2;
-  color: #fff;
-  font-weight: 700;
-  text-align: center;
-}
-#flagImage[src="Comm/gia.png"] {
-  width: 100%;       /* fit toàn bộ chiều ngang container */
-  max-width: 100%;   /* không vượt quá container */
-  height: auto;      /* giữ nguyên tỉ lệ gốc */
-  display: block;
   cursor: url('assets/chi.png') 16 16, pointer;
 }
 
+/* =====================================================
+   🖼️ GALLERY
+===================================================== */
 #gallery {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(150px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    margin-top: 30px;
-  margin: 30px auto 0;    /* căn giữa */
-  width: 100%;  
+  display: grid;
+  grid-template-columns: repeat(5, minmax(150px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  margin: 30px auto 0;
+  width: 100%;
 }
-/* layout riêng cho ảnh vertical (truyện) */
+
 #gallery.gallery-vertical {
   grid-template-columns: repeat(6, minmax(150px, 1fr));
   gap: 25px;
   justify-items: center;
 }
+
 #gallery.gallery-vertical .thumb-vertical {
   aspect-ratio: 1/1.4142;
   width: 100%;
   height: auto;
 }
 
-.thumb {
-    width: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-cursor: url('assets/chi.png') 16 16, pointer;
-}
-.thumb:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-cursor: url('assets/chi.png') 16 16, pointer;
-}
+/* Thumbnail chung */
+.thumb,
 .thumb-vertical {
-width: 100%;
-max-width: 100%;
-    aspect-ratio: 1/1.4142;
-  height: auto;
-    object-fit: cover;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-cursor: url('assets/chi.png') 16 16, pointer;
+  width: 100%;
+  object-fit: cover;
+  cursor: url('assets/chi.png') 16 16, pointer;
+  border-radius: 6px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.thumb { aspect-ratio: 1/1; }
+.thumb-vertical { aspect-ratio: 1/1.4142; }
 
+.thumb:hover,
+.thumb-vertical:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
+/* =====================================================
+   🪟 OVERLAY XEM ẢNH
+===================================================== */
 #overlay {
   display: none;
   position: fixed;
@@ -318,13 +314,13 @@ cursor: url('assets/chi.png') 16 16, pointer;
   background: rgba(0,0,0,0.95);
   z-index: 999;
   justify-content: center;
-  align-items: center;          /* căn giữa cả ảnh lẫn info */
+  align-items: center;
   padding: 20px;
 }
 
 .overlay-content {
   display: flex;
-  align-items: flex-end;         /* phần info dồn xuống dưới */
+  align-items: flex-end;
   justify-content: center;
   gap: 30px;
   max-width: 90vw;
@@ -339,17 +335,17 @@ cursor: url('assets/chi.png') 16 16, pointer;
 }
 
 #imageInfo {
-  width: 300px;                  /* cố định chiều ngang */
+  width: 300px;
   background-color: rgba(255, 250, 240, 1);
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;     /* dồn nội dung xuống sát đáy */
+  justify-content: flex-end;
   padding: 20px;
   overflow-y: auto;
   max-height: 90vh;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-cursor: url('assets/chi.png') 16 16, pointer;
+  cursor: url('assets/chi.png') 16 16, pointer;
 }
 
 #imageInfo h2 {
@@ -361,8 +357,8 @@ cursor: url('assets/chi.png') 16 16, pointer;
 #imageInfo p {
   line-height: 1.6;
   font-size: 1rem;
-text-align: left;
-margin-bottom: 35px;
+  text-align: left;
+  margin-bottom: 35px;
 }
 
 #overlay button {
@@ -376,79 +372,41 @@ margin-bottom: 35px;
   cursor: url('assets/chi.png') 16 16, pointer;
 }
 
-/* 📱 Responsive cho điện thoại */
-@media (max-width: 768px) {
-  #gallery {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
-    padding: 15px;
-    max-width: 95vw;  /* co lại khi màn nhỏ */
-  }
-  .overlay-content {
-    flex-direction: column;       /* Info xuống dưới ảnh */
-    align-items: center;
-    gap: 15px;
-    max-width: 100%;
-    max-height: 100%;
-
-  }
-
-  #fullImage {
-    max-width: 100%;
-    max-height: 60vh;
-  }
-
-  #imageInfo {
-    width: 100%;
-    max-height: 40vh;
-    padding: 15px;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  #overlay button {
-    top: 15px;
-    right: 15px;
-    font-size: 1.8rem;
-  }
+/* =====================================================
+   ☎️ ICON MẠNG XÃ HỘI
+===================================================== */
+.floating-icons {
+  position: fixed;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 32px;
+  z-index: 999;
+  opacity: 1;
+  transition: opacity 0.4s ease;
 }
-/* === RESPONSIVE CHO MOBILE === */
-@media (max-width: 768px) {
-  #gallery {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 8px;
-  }
-
-  #gallery.gallery-vertical {
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    gap: 8px;
-  }
+.floating-icons a {
+  color: #0c2f4d;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.floating-icons a:hover {
+  transform: scale(1.3);
+  color: #f27b84;
+  cursor: url('assets/chi.png') 16 16, pointer;
+}
+body.overlay-open .floating-icons {
+  opacity: 0;
+  pointer-events: none;
 }
 
-@media (max-width: 480px) {
-  #gallery {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  #gallery.gallery-vertical {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-
-    /* --- floating icons --- */
-       .floating-icons {
-      position: fixed; top: 50%; left: 16px; transform: translateY(-50%); display: flex; flex-direction: column; gap: 20px;
-      font-size: 32px; z-index: 999; opacity: 1; transition: opacity 0.4s ease;
-    }
-    .floating-icons a { color: #0c2f4d; transition: transform 0.2s ease, color 0.2s ease; }
-    .floating-icons a:hover { transform: scale(1.3); color: #f27b84; cursor: url('assets/chi.png') 16 16, pointer; }
-
-    .gmail-icon { position: relative; }
-.discord-icon { position: relative; }
-    .copy-note {
-        position: absolute;
-  left: 110%; /* nằm bên phải icon */
+/* Ghi chú copy icon */
+.gmail-icon, .discord-icon { position: relative; }
+.copy-note {
+  position: absolute;
+  left: 110%;
   top: 50%;
   transform: translateY(-50%);
   font-size: 12px;
@@ -461,40 +419,87 @@ margin-bottom: 35px;
   pointer-events: none;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
-    .gmail-icon.show-note .copy-note { opacity: 1; }
-    .discord-icon.show-note .copy-note { opacity: 1; }
-    @media (max-width: 768px) {
-      body { padding: 5px 1px; }
+.gmail-icon.show-note .copy-note,
+.discord-icon.show-note .copy-note { opacity: 1; }
+
+/* =====================================================
+   📱 RESPONSIVE - MOBILE / TABLET
+===================================================== */
+
+/* Popup */
+@media (max-width:600px){
+  #termsPopup .popup-content { padding: 14px; font-size: 14px; }
+}
+
+/* Gallery */
 @media (max-width:768px){
-  .content {
-    position: relative;         /* không cần absolute */
-    top: auto;                  /* bỏ căn dọc */
-    transform: none;            /* bỏ translateY */
-    max-width:85vw;            /* giữ nguyên */
-    left: 10px;               /* lệch nhẹ sang phải giống index */
-    margin: 0 auto;             /* vẫn căn giữa theo flex của body */
-margin-top: 120px;
+  #gallery {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    padding: 15px;
+    max-width: 95vw;
+  }
+  #gallery.gallery-vertical {
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px;
   }
 }
-      .floating-icons { left: 10px; font-size: 1.3em; opacity: 1; pointer-events: auto; }
-      .main-image { width: 100%; }
-      .back-btn {width: 10vww; right: 10px; top: 10px;}
-    }
 
-    body.dark-mode {
-      background:
-        linear-gradient(to right, rgba(15,23,42,0.9), rgba(30,41,59,0.9)),
-        repeating-linear-gradient(90deg, #dbeafe 0 20px, #bfdbfe 20px 40px),
-        repeating-linear-gradient(0deg, #dbeafe 0 20px, #bfdbfe 20px 40px);
-      background-blend-mode: multiply;
-      color: #e2e8f0;
-    }
-    body.dark-mode .content { background-color: rgba(0, 5, 15, 0.7); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); }
-    body.dark-mode .copy-note { color: #f8c365; }
-    body.dark-mode .floating-icons a { color: #f8c365; }
-    body.dark-mode .floating-icons a:hover { color: #f27b84; }
-    }
-  </style>
+/* 2 cột khi màn nhỏ */
+@media (max-width:480px){
+  #gallery, #gallery.gallery-vertical {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Overlay mobile fix */
+@media (max-width:768px){
+  #overlay { align-items: flex-start; overflow-y: auto; }
+  .overlay-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-height: 100vh;
+  }
+  #fullImage { max-width: 100%; max-height: 55vh; }
+  #imageInfo {
+    width: 100%;
+    max-height: 40vh;
+    overflow-y: auto;
+    padding: 16px;
+    background-color: rgba(255,250,240,0.95);
+    border-radius: 0;
+    box-shadow: none;
+    font-size: 15px;
+    line-height: 1.5;
+    text-align: left;
+  }
+  #overlay button { top: 10px; right: 10px; font-size: 1.6rem; }
+}
+
+/* Layout body + icon */
+@media (max-width:768px){
+  body { padding: 5px 1px; }
+  .content {
+    position: relative;
+    top: auto;
+    transform: none;
+    max-width: 85vw;
+    left: 10px;
+    margin: 120px auto 0;
+  }
+  .floating-icons {
+    left: 10px;
+    font-size: 1.3em;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .main-image { width: 100%; }
+  .back-btn { width: 10vw; right: 10px; top: 10px; }
+}
+</style>
+
 </head>
 <body>
 
@@ -886,6 +891,7 @@ window.addEventListener('scroll', () => {
 });
 
 const overlay = document.getElementById('overlay');
+const floatingIcons = document.querySelector('.floating-icons');
 const fullImage = document.getElementById('fullImage');
 const imgTitle = document.getElementById('imgTitle');
 const imgDesc = document.getElementById('imgDesc');
@@ -902,6 +908,9 @@ function openOverlay(fullSrc, title, desc) {
 
   // optional: khóa scroll nền nếu muốn
   // document.body.style.overflow = 'hidden';
+
+  // Ẩn bộ icon dọc khi overlay mở
+  if (floatingIcons) floatingIcons.style.display = 'none';
 }
 
 // đóng overlay
@@ -910,6 +919,8 @@ function closeOverlay() {
   document.body.classList.remove('overlay-open');
   // document.body.style.overflow = ''; // nếu dùng khóa scroll
   fullImage.src = ''; // giải phóng memory / stop tải
+  // Hiện lại bộ icon dọc khi overlay tắt
+  if (floatingIcons) floatingIcons.style.display = 'flex';
 }
 
 // gán event cho thumbnails
