@@ -7,6 +7,7 @@
   <link rel="icon" href="favicon.png?v=2" type="image/png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700&family=Hind+Madurai:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
 /* =====================================================
@@ -336,7 +337,9 @@ body.popup-open .back-btn { display: none !important; }
 
 #imageInfo {
   width: 300px;
-  background-color: rgba(255, 250, 240, 1);
+  background: repeating-linear-gradient(90deg, #dbeafe 0 20px, #bfdbfe 20px 40px),
+              repeating-linear-gradient(0deg, #dbeafe 0 20px, #bfdbfe 20px 40px);
+  background-blend-mode: overlay;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -350,16 +353,24 @@ body.popup-open .back-btn { display: none !important; }
 
 #imageInfo h2 {
   margin-bottom: 10px;
-  font-size: 1.5rem;
+  font-size: 2.1 rem;
+  font-family: 'Nunito', sans-serif;
   color: #ff7a7a;
 }
 
 #imageInfo p {
-  line-height: 1.6;
-  font-size: 1rem;
+  line-height: 1.75;               /* tăng nhẹ khoảng cách dòng */
+  font-size: 1.05rem;              /* chữ to hơn 1 chút */
+  font-family: 'Hind Madurai', sans-serif; /* font dễ đọc, thân thiện */
+  color: #0f0f0f;
   text-align: left;
   margin-bottom: 35px;
-color: #0f0f0f;
+  /* --- Nền trắng mờ --- */
+  background: rgba(255, 255, 255, 0.6); /* trắng mờ 60% */
+  padding: 12px 16px;                   /* tạo khoảng đệm trong */
+  border-radius: 10px;                  /* bo góc nhẹ */
+  backdrop-filter: blur(4px);           /* làm mờ nền phía sau (hiệu ứng kính mờ) */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* đổ bóng nhẹ */
 }
 
 #overlay button {
