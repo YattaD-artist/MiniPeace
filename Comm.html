@@ -411,6 +411,28 @@ cursor: url('assets/chi.png') 16 16, pointer;
     font-size: 1.8rem;
   }
 }
+/* === RESPONSIVE CHO MOBILE === */
+@media (max-width: 768px) {
+  #gallery {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+  }
+
+  #gallery.gallery-vertical {
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  #gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  #gallery.gallery-vertical {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
 
     /* --- floating icons --- */
