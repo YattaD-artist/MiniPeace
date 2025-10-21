@@ -74,29 +74,38 @@ body.dark-mode .floating-icons a:hover { color: #f27b84; }
   display: block;
 }
 
-#flagImage[src="Comm/dichvu.png"] {
-  width: 70vw;
-  height: auto;
+#flagImage[src="Comm/dichvu.png"],
+#flagImage[src="Comm/quytrinh.png"],
+#flagImage[src="Comm/thanhtoan.png"],
+#flagImage[src="Comm/gia.png"] {
   display: block;
-  margin: 10vh auto 0;
+  margin-left: auto;
+  margin-right: auto;
+  height: auto;
+  cursor: url('assets/chi.png') 16 16, pointer;
+  object-fit: contain;
+  object-position: center;
+  max-width: 90vw; /* phòng trường hợp viewport nhỏ */
+}
+
+/* Riêng từng loại có thể giữ tỉ lệ margin khác nhau */
+#flagImage[src="Comm/dichvu.png"] {
+  width: 40vw;
+  margin-top: 10vh;
 }
 
 #flagImage[src="Comm/quytrinh.png"] {
-  width: 80vw;
-  height: auto;
-  display: block;
-  cursor: url('assets/chi.png') 16 16, pointer;
+  width: 65vw;
   margin: 5vh auto 30px;
 }
 
 #flagImage[src="Comm/gia.png"] {
   width: 100%;
-  max-width: 100%;
-  height: auto;
-  display: block;
-  cursor: url('assets/chi.png') 16 16, pointer;
 }
 
+#flagImage[src="Comm/thanhtoan.png"] {
+  width: 35vw;
+}
 /* =====================================================
    🔙 NÚT QUAY LẠI
 ===================================================== */
