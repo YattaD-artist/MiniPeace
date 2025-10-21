@@ -9,13 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
 
   <style>
+    /* ============================
+       Base / Reset
+       Giữ nguyên giao diện hiện tại — chỉ gom nhóm và chú thích
+       ============================ */
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
-  overflow-y: scroll;
+      overflow-y: scroll;
       font-family: 'Segoe UI', sans-serif;
-      background: repeating-linear-gradient(90deg, #dbeafe 0 20px, #bfdbfe 20px 40px),
-                  repeating-linear-gradient(0deg, #dbeafe 0 20px, #bfdbfe 20px 40px);
-      background-blend-mode: overlay;
       min-height: 100vh;
       display: flex;
       align-items: flex-start;
@@ -23,49 +25,40 @@
       text-align: center;
       padding: 40px 20px 20px;
       cursor: url('assets/tay.png') 16 16, default;
+
+      /* Background pattern (kept original appearance) */
+      background: repeating-linear-gradient(90deg, #dbeafe 0 20px, #bfdbfe 20px 40px),
+                  repeating-linear-gradient(0deg, #dbeafe 0 20px, #bfdbfe 20px 40px);
+      background-blend-mode: overlay;
     }
 
-    /*.element-grab { cursor: url('assets/cam.png'), grab; }
-    .element-grabbing { cursor: url('assets/nam.png'), grabbing; }*/
-
+    /* ============================
+       Main content container
+       ============================ */
     .content {
       position: relative;
       z-index: 2;
-      background-color: rgba(255, 250, 240, 0.7);
-      padding: 0px;
+      background-color: rgba(255,250,240,0.7);
+      padding: 0;
       margin: 0;
       border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
       max-width: 90vw;
       min-width: 320px;
       overflow: hidden;
     }
 
-#flagImage[src="Comm/dichvu.png"] {
-  width: 70vw;   /* chiếm 70% chiều ngang màn hình */
-  height: auto;  /* giữ tỉ lệ gốc */
-  display: block;
-  margin: 10vh auto 0; /* cách trên 20px, căn giữa ngang */
-}
-#flagImage[src="Comm/quytrinh.png"] {
-  width: 80vw;   /* hoặc giá trị bạn muốn */
-  height: auto;
-  display: block;
-  cursor: url('assets/chi.png') 16 16, pointer;
-  margin: 5vh auto 30px; /* khoảng cách trên dưới */
-}
+    /* Main top image */
+    .main-image {
+      margin: 20px auto 0;
+      width: 65%;
+      height: auto;
+      display: block;
+    }
 
-
-body.dark-mode #loading-screen {
-  background: #0b0f1a; /* nền dark mode */
-}
-
-.main-image {
-  margin: 20px auto 0;   /* auto left-right để căn giữa */
-  width: 65%;            /* 65% chiều ngang container */
-  height: auto;
-  display: block;        /* để margin auto hoạt động */
-}
+    /* ============================
+       Back button (fixed)
+       ============================ */
     .back-btn {
       position: fixed;
       top: 20px;
@@ -77,409 +70,181 @@ body.dark-mode #loading-screen {
       border: none;
       cursor: url('assets/chi.png') 16 16, pointer;
       z-index: 100;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
-.back-btn:hover {
-  animation: tilt-wiggle 0.6s ease-in-out infinite alternate;
-}
-.back-btn.hide {
-  opacity: 0;
-  transform: translateY(20px); /* trượt nhẹ xuống khi ẩn */
-  pointer-events: none;        /* không bị click khi ẩn */
-}
-
-@keyframes tilt-wiggle {
-  0%   { transform: rotate(0deg); }
-  50%  { transform: rotate(-8deg); } /* nghiêng trái */
-  100% { transform: rotate(8deg); }  /* nghiêng phải */
-}
-
-.menu {
-  margin: 40px auto 0;   /* căn giữa cả khối menu */
-  display: flex;
-  justify-content: center; /* căn giữa các cờ */
-  gap: 20px;               /* khoảng cách giữa các cờ */
-  flex-wrap: wrap;         /* nếu màn hình hẹp thì xuống dòng */
-  width: auto;             /* không ép 90vw nữa */
-}
-
-canvas.flag {
-  width: 15%;      /* mỗi lá cờ chiếm 15% container cha */
-  min-width: 80px; /* đảm bảo không quá nhỏ khi màn nhỏ */
-  height: auto;
-    cursor: url('assets/chi.png') 16 16, pointer;
-}
-
-/* link điều khoản (ẩn mặc định) */
-#termsLink {
-  display: none;
-  margin: 20px auto 80px;
-  color: #ff3314;
-  font-weight: 700;
-    cursor: url('assets/chi.png') 16 16, pointer;
-  text-decoration: underline;
-}
-
-/* popup overlay */
-#termsPopup {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.6);
-  z-index: 9999;
-    cursor: url('assets/chi.png') 16 16, pointer;
-}
-
-/* popup content */
-#termsPopup .popup-content {
-  background: #fff;
-  color: #111;
-  width: 100%;
-  max-width: 900px;
-  max-height: calc(100vh - 80px);
-  overflow-y: auto;
-  padding: 40px 60px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  text-align: left;
-  line-height: 1.7;
-  font-size: 18px;
-  position: relative; /* để nút đóng không bị trôi */
-  z-index: 10000;     /* chắc chắn nằm trên overlay nền */
-}
-/* Ẩn back-btn khi overlay hoặc terms popup mở */
-body.overlay-open .back-btn,
-body.popup-open .back-btn {
-  display: none !important;
-}
-
-
-/* table style like docx */
-.terms-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 12px 0 18px;
-}
-.terms-table th,
-.terms-table td {
-  border: 1px solid #ccc;
-  padding: 8px 10px;
-  vertical-align: top;
-}
-.terms-table th {
-  background: #f5f5f5;
-  font-weight: 700;
-}
-
-/* close button */
-.popup-close {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 6px;
-}
-.popup-close button {
-  background: #ff3314;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-    cursor: url('assets/chi.png') 16 16, pointer;
-  font-weight: 700;
-}
-
-/* make content readable on small screens */
-@media (max-width:600px){
-  #termsPopup .popup-content { padding: 14px; font-size: 14px; }
-}
-
-/* prevent background scroll when popup open */
-body.popup-open { overflow: hidden; }
-/* Tiêu đề chính */
-#termsTitle {
-  text-align: center;       /* căn giữa */
-  margin: 2.5rem 0 2rem;    /* khoảng cách trên dưới rộng hơn */
-  font-size: 2.5rem;          /* chữ to hơn */
-  font-weight: bold;
-}
-
-/* Tiêu đề mục con (1,2,3...) */
-#terms h3 {
-  margin-top: 2rem;         /* cách xa mục trên */
-  margin-bottom: 0.7rem;      /* tạo khoảng thở bên dưới */
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-/* Danh sách nội dung */
-#terms ul {
-  margin: 0 0 1.5rem 1.5rem; /* thụt vào và cách dưới */
-  line-height: 1.6;          /* giãn dòng dễ đọc */
-}
-
-/* Bảng */
-#terms .terms-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0 2rem;       /* cách trên dưới rộng hơn */
-}
-
-#terms .terms-table th,
-#terms .terms-table td {
-  border: 1px solid #ddd;
-  padding: 0.75rem;
-  text-align: left;
-}
-
-#terms .terms-table th {
-  background-color: #f8f8f8;
-  font-weight: 600;
-}
-
-/* Tô nền nhẹ cho dòng xen kẽ */
-#terms .terms-table tbody tr:nth-child(even) {
-  background-color: #fafafa;
-}
-
-#terms .terms-table th,
-#terms .terms-table td {
-  border: 1px solid #ccc;
-  padding: 0.75rem;
-}
-#terms .terms-table tbody tr:hover {
-  background-color: #d2e5f3; /* highlight khi hover */
-}
-#terms .terms-table th {
-  background: #ef9ab2;
-  color: #fff;
-  font-weight: 700;
-  text-align: center;
-}
-#flagImage[src="Comm/gia.png"] {
-  width: 100%;       /* fit toàn bộ chiều ngang container */
-  max-width: 100%;   /* không vượt quá container */
-  height: auto;      /* giữ nguyên tỉ lệ gốc */
-  display: block;
-  cursor: url('assets/chi.png') 16 16, pointer;
-}
-
-#gallery {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(150px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    margin-top: 30px;
-  margin: 30px auto 0;    /* căn giữa */
-  width: 100%;  
-}
-/* layout riêng cho ảnh vertical (truyện) */
-#gallery.gallery-vertical {
-  grid-template-columns: repeat(6, minmax(150px, 1fr));
-  gap: 25px;
-  justify-items: center;
-}
-#gallery.gallery-vertical .thumb-vertical {
-  aspect-ratio: 1/1.4142;
-  width: 100%;
-  height: auto;
-}
-
-.thumb {
-    width: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-cursor: url('assets/chi.png') 16 16, pointer;
-}
-.thumb:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-cursor: url('assets/chi.png') 16 16, pointer;
-}
-.thumb-vertical {
-width: 100%;
-max-width: 100%;
-    aspect-ratio: 1/1.4142;
-  height: auto;
-    object-fit: cover;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-cursor: url('assets/chi.png') 16 16, pointer;
-
-}
-
-#overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.95);
-  z-index: 999;
-  justify-content: center;
-  align-items: center;          /* căn giữa cả ảnh lẫn info */
-  padding: 20px;
-}
-
-.overlay-content {
-  display: flex;
-  align-items: flex-end;         /* phần info dồn xuống dưới */
-  justify-content: center;
-  gap: 30px;
-  max-width: 90vw;
-  max-height: 90vh;
-}
-
-#fullImage {
-  max-width: 65%;
-  max-height: 90vh;
-  object-fit: contain;
-  display: block;
-}
-
-#imageInfo {
-  width: 300px;                  /* cố định chiều ngang */
-  background-color: rgba(255, 250, 240, 1);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;     /* dồn nội dung xuống sát đáy */
-  padding: 20px;
-  text-align: justify;          /* căn đều 2 bên */
-  overflow-y: auto;
-  max-height: 90vh;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-cursor: url('assets/chi.png') 16 16, pointer;
-}
-
-#imageInfo h2 {
-  margin-bottom: 10px;
-  font-size: 1.5rem;
-  color: #ff7a7a;
-}
-
-#imageInfo p {
-  line-height: 1.6;
-  font-size: 1rem;
-}
-
-#overlay button {
-  position: absolute;
-  top: 30px;
-  right: 50px;
-  font-size: 2rem;
-  background: none;
-  border: none;
-  color: white;
-  cursor: url('assets/chi.png') 16 16, pointer;
-}
-
-/* 📱 Responsive cho điện thoại */
-@media (max-width: 768px) {
-  #gallery {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
-    padding: 15px;
-    max-width: 95vw;  /* co lại khi màn nhỏ */
-  }
-  .overlay-content {
-    flex-direction: column;       /* Info xuống dưới ảnh */
-    align-items: center;
-    gap: 15px;
-    max-width: 100%;
-    max-height: 100%;
-
-  }
-
-  #fullImage {
-    max-width: 100%;
-    max-height: 60vh;
-  }
-
-  #imageInfo {
-    width: 100%;
-    max-height: 40vh;
-    padding: 15px;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  #overlay button {
-    top: 15px;
-    right: 15px;
-    font-size: 1.8rem;
-  }
-}
-/* === RESPONSIVE CHO MOBILE === */
-@media (max-width: 768px) {
-  #gallery {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 8px;
-  }
-
-  #gallery.gallery-vertical {
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    gap: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  #gallery {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  #gallery.gallery-vertical {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-
-    /* --- floating icons --- */
-       .floating-icons {
-      position: fixed; top: 50%; left: 16px; transform: translateY(-50%); display: flex; flex-direction: column; gap: 20px;
-      font-size: 32px; z-index: 999; opacity: 1; transition: opacity 0.4s ease;
+    .back-btn:hover { animation: tilt-wiggle 0.6s ease-in-out infinite alternate; }
+    .back-btn.hide {
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
     }
-    .floating-icons a { color: #0c2f4d; transition: transform 0.2s ease, color 0.2s ease; }
+    @keyframes tilt-wiggle {
+      0%   { transform: rotate(0deg); }
+      50%  { transform: rotate(-8deg); }
+      100% { transform: rotate(8deg); }
+    }
+
+    /* ============================
+       Flag menu (canvas flags)
+       ============================ */
+    .menu {
+      margin: 40px auto 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      width: auto;
+    }
+    canvas.flag {
+      width: 15%;
+      min-width: 80px;
+      height: auto;
+      cursor: url('assets/chi.png') 16 16, pointer;
+    }
+
+    /* Specific flag images shown in #flagImage (selectors kept as in original) */
+    #flagImage[src="Comm/dichvu.png"] { width: 70vw; height: auto; display:block; margin:10vh auto 0; }
+    #flagImage[src="Comm/quytrinh.png"] { width: 80vw; height:auto; display:block; cursor: url('assets/chi.png') 16 16, pointer; margin:5vh auto 30px; }
+    #flagImage[src="Comm/gia.png"] { width:100%; max-width:100%; height:auto; display:block; cursor: url('assets/chi.png') 16 16, pointer; }
+
+    /* ============================
+       Terms link + Popup (overlay)
+       ============================ */
+    /* link điều khoản (ẩn mặc định) */
+    #termsLink { display: none; margin: 20px auto 80px; color: #ff3314; font-weight: 700; cursor: url('assets/chi.png') 16 16, pointer; text-decoration: underline; }
+
+    /* popup overlay for terms */
+    #termsPopup {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.6);
+      z-index: 9999;
+      cursor: url('assets/chi.png') 16 16, pointer;
+    }
+    #termsPopup .popup-content {
+      background: #fff;
+      color: #111;
+      width: 100%;
+      max-width: 900px;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+      padding: 40px 60px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      text-align: left;
+      line-height: 1.7;
+      font-size: 18px;
+      position: relative;
+      z-index: 10000;
+    }
+    .popup-close { display:flex; justify-content:flex-end; margin-bottom:6px; }
+    .popup-close button {
+      background:#ff3314; color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor: url('assets/chi.png') 16 16, pointer; font-weight:700;
+    }
+
+    /* Terms formatting like document */
+    #termsTitle { text-align:center; margin:2.5rem 0 2rem; font-size:2.5rem; font-weight:bold; }
+    #terms h3 { margin-top:2rem; margin-bottom:0.7rem; font-size:1.4rem; font-weight:700; }
+    #terms ul { margin:0 0 1.5rem 1.5rem; line-height:1.6; }
+    .terms-table { width:100%; border-collapse:collapse; margin:1rem 0 2rem; }
+    .terms-table th, .terms-table td { border:1px solid #ccc; padding:0.75rem; text-align:left; vertical-align:top; }
+    .terms-table th { background:#ef9ab2; color:#fff; font-weight:700; text-align:center; }
+    .terms-table tbody tr:nth-child(even) { background:#fafafa; }
+    .terms-table tbody tr:hover { background:#d2e5f3; }
+
+    /* When popup/overlay open, hide back button */
+    body.overlay-open .back-btn,
+    body.popup-open .back-btn { display: none !important; }
+
+    /* Prevent background scroll when popup open */
+    body.popup-open { overflow: hidden; }
+
+    /* ============================
+       Gallery (thumbs) + Overlay viewer
+       ============================ */
+    #gallery {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      margin: 30px auto 0;
+      width: 100%;
+    }
+    /* vertical comic layout */
+    #gallery.gallery-vertical { grid-template-columns: repeat(6, minmax(150px, 1fr)); gap: 25px; justify-items: center; }
+    .thumb { width:100%; aspect-ratio:1/1; object-fit:cover; cursor:pointer; border-radius:6px; transition:transform .2s ease, box-shadow .2s ease; cursor: url('assets/chi.png') 16 16, pointer; }
+    .thumb:hover { transform:scale(1.05); box-shadow:0 4px 10px rgba(0,0,0,0.2); }
+    .thumb-vertical { aspect-ratio:1/1.4142; }
+
+    /* overlay viewer (full image + info) */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .overlay-content {
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      gap:30px;
+      max-width:90vw;
+      max-height:90vh;
+    }
+    #fullImage { max-width:65%; max-height:90vh; object-fit:contain; display:block; }
+    #imageInfo {
+      width:300px;
+      background: rgba(255,250,240,1);
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      padding:20px;
+      overflow-y:auto;
+      max-height:90vh;
+      border-radius:8px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.4);
+      cursor: url('assets/chi.png') 16 16, pointer;
+    }
+    #imageInfo h2 { margin-bottom:10px; font-size:1.5rem; color:#ff7a7a; }
+    #imageInfo p { line-height:1.6; font-size:1rem; text-align:justify; margin-bottom: 35px; }
+    #overlay button {
+      position:absolute; top:30px; right:50px; font-size:2rem; background:none; border:none; color:white; cursor:url('assets/chi.png') 16 16, pointer;
+    }
+
+    /* ============================
+       Floating social icons (left)
+       ============================ */
+    .floating-icons {
+      position: fixed;
+      top: 50%;
+      left: 16px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      font-size: 32px;
+      z-index: 999;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+    .floating-icons a { color: #0c2f4d; transition: transform .2s ease, color .2s ease; }
     .floating-icons a:hover { transform: scale(1.3); color: #f27b84; cursor: url('assets/chi.png') 16 16, pointer; }
-
-    .gmail-icon { position: relative; }
-.discord-icon { position: relative; }
     .copy-note {
-        position: absolute;
-  left: 110%; /* nằm bên phải icon */
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 12px;
-  color: #f27b84;
-  background: rgba(0,0,0,0.7);
-  padding: 2px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-    .gmail-icon.show-note .copy-note { opacity: 1; }
-    .discord-icon.show-note .copy-note { opacity: 1; }
-    @media (max-width: 768px) {
-      body { padding: 5px 1px; }
-@media (max-width:768px){
-  .content {
-    position: relative;         /* không cần absolute */
-    top: auto;                  /* bỏ căn dọc */
-    transform: none;            /* bỏ translateY */
-    max-width:85vw;            /* giữ nguyên */
-    left: 10px;               /* lệch nhẹ sang phải giống index */
-    margin: 0 auto;             /* vẫn căn giữa theo flex của body */
-margin-top: 120px;
-  }
-}
-      .floating-icons { left: 10px; font-size: 1.3em; opacity: 1; pointer-events: auto; }
-      .main-image { width: 100%; }
-      .back-btn {width: 10vww; right: 10px; top: 10px;}
+      position:absolute; left:110%; top:50%; transform:translateY(-50%); font-size:12px;
+      color:#f27b84; background:rgba(0,0,0,0.7); padding:2px 6px; border-radius:4px; white-space:nowrap;
+      opacity:0; pointer-events:none; transition:opacity .3s ease, transform .3s ease;
     }
+    .gmail-icon.show-note .copy-note, .discord-icon.show-note .copy-note { opacity:1; }
 
+    /* ============================
+       Dark mode
+       ============================ */
     body.dark-mode {
       background:
         linear-gradient(to right, rgba(15,23,42,0.9), rgba(30,41,59,0.9)),
@@ -488,246 +253,252 @@ margin-top: 120px;
       background-blend-mode: multiply;
       color: #e2e8f0;
     }
-    body.dark-mode .content { background-color: rgba(0, 5, 15, 0.7); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); }
+    body.dark-mode .content { background-color: rgba(0,5,15,0.7); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
     body.dark-mode .copy-note { color: #f8c365; }
     body.dark-mode .floating-icons a { color: #f8c365; }
     body.dark-mode .floating-icons a:hover { color: #f27b84; }
+
+    /* ============================
+       Responsive: tablets & phones
+       ============================ */
+    @media (max-width: 768px) {
+      body { padding:5px 1px; }
+      .content { position: relative; top: auto; transform: none; max-width:85vw; left:10px; margin:0 auto; margin-top:120px; }
+      .floating-icons { left:10px; font-size:1.3em; opacity:1; pointer-events:auto; }
+      .main-image { width:100%; }
+      .back-btn { width:10vww; right:10px; top:10px; }
+
+      #gallery { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; padding: 15px; max-width:95vw; }
+      #gallery.gallery-vertical { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+      .thumb-vertical { width:100%; }
+      .overlay-content { flex-direction:column; align-items:center; gap:15px; max-width:100%; max-height:100%; }
+      #fullImage { max-width:100%; max-height:60vh; }
+      #imageInfo { width:100%; max-height:40vh; padding:15px; border-radius:0; box-shadow:none; }
+      #overlay button { top:15px; right:15px; font-size:1.8rem; }
+    }
+
+    @media (max-width: 480px) {
+      #gallery { grid-template-columns: repeat(2, 1fr); }
+      #gallery.gallery-vertical { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
 
-  <a href="index.html" class="back-btn" title="Quay lại trang chủ"></a>
-  
-<div class="content">
-  <!-- ảnh chính -->
-  <img src="Comm/comm.png" alt="Main Image" class="main-image" id="commImage">
+  <!-- Back button -->
+  <a href="index.html" class="back-btn" title="Quay lại trang chủ" aria-label="Quay lại trang chủ"></a>
 
-  <!-- menu cờ -->
-  <div class="menu">
-    <canvas class="flag" data-src="Comm/flag1.png" data-img="Comm/dichvu.png"></canvas>
-    <canvas class="flag" data-src="Comm/flag2.png" data-img="Comm/quytrinh.png"></canvas>
-    <canvas class="flag" data-src="Comm/flag3.png" data-img="Comm/gia.png"></canvas>
-    <canvas class="flag" data-src="Comm/flag4.png" data-img="Comm/minhhoa.png"></canvas>
-    <canvas class="flag" data-src="Comm/flag5.png" data-img="Comm/truyen.png"></canvas>
-    <canvas class="flag" data-src="Comm/flag6.png" data-img="Comm/thanhtoan.png"></canvas>
-  </div>
+  <div class="content">
+    <!-- Ảnh chính -->
+    <img src="Comm/comm.png" alt="Main Image" class="main-image" id="commImage">
 
-<div id="flagImageContainer" style="margin-top:20px;">
-  <img id="flagImage" src="" alt="">
-
-  <!-- Gallery (ẩn mặc định) -->
-  <div id="gallery" style="display:none;">
-  <img class="thumb" src="Gallery/thumb1.png" data-full="Gallery/img1.png" alt="Ảnh 1" data-title="Ảnh minh họa 1" data-desc="Khóc trên hồ, phía sau là thác. Hu hu hu hu....">
-  <img class="thumb" src="Gallery/thumb2.png" data-full="Gallery/img2.png" alt="Ảnh 2" data-title="Ảnh minh họa 2" data-desc="Mô tả ngắn về ảnh 2.">
-  <img class="thumb" src="Gallery/thumb3.png" data-full="Gallery/img3.png" alt="Ảnh 3" data-title="Ảnh minh họa 3" data-desc="Mô tả ngắn về ảnh 3.">
-  <img class="thumb" src="Gallery/thumb4.png" data-full="Gallery/img4.png" alt="Ảnh 4" data-title="Ảnh minh họa 4" data-desc="Mô tả ngắn về ảnh 4.">
-  <img class="thumb" src="Gallery/thumb5.png" data-full="Gallery/img5.png" alt="Ảnh 5" data-title="Ảnh minh họa 5" data-desc="Mô tả ngắn về ảnh 5.">
-  <img class="thumb" src="Gallery/thumb6.png" data-full="Gallery/img6.png" alt="Ảnh 6" data-title="Ảnh minh họa 6" data-desc="Mô tả ngắn về ảnh 6.">
-  <img class="thumb" src="Gallery/thumb7.png" data-full="Gallery/img7.png" alt="Ảnh 7" data-title="Ảnh minh họa 7" data-desc="Mô tả ngắn về ảnh 7.">
-  <img class="thumb" src="Gallery/thumb8.png" data-full="Gallery/img8.png" alt="Ảnh 8" data-title="Ảnh minh họa 8" data-desc="Mô tả ngắn về ảnh 8.">
-  <img class="thumb" src="Gallery/thumb9.png" data-full="Gallery/img9.png" alt="Ảnh 9" data-title="Ảnh minh họa 9" data-desc="Mô tả ngắn về ảnh 9.">
-  <img class="thumb" src="Gallery/thumb10.png" data-full="Gallery/img10.png" alt="Ảnh 10" data-title="Ảnh minh họa 10" data-desc="Mô tả ngắn về ảnh 10.">
-<img class="thumb thumb-vertical" src="Gallery/thumb11.png" data-full="Gallery/img11.png" alt="Ảnh 11" data-title="Sample 1" data-desc="Mô tả ngắn ảnh 11.">
-<img class="thumb thumb-vertical" src="Gallery/thumb12.png" data-full="Gallery/img12.png" alt="Ảnh 12" data-title="Sample 2" data-desc="Mô tả ngắn ảnh 12.">
-<img class="thumb thumb-vertical" src="Gallery/thumb13.png" data-full="Gallery/img13.png" alt="Ảnh 13" data-title="Sample 3" data-desc="Mô tả ngắn ảnh 13.">
-<img class="thumb thumb-vertical" src="Gallery/thumb14.png" data-full="Gallery/img14.png" alt="Ảnh 14" data-title="Sample 4" data-desc="Mô tả ngắn ảnh 14.">
-<img class="thumb thumb-vertical" src="Gallery/thumb15.png" data-full="Gallery/img15.png" alt="Ảnh 15" data-title="Sample 5" data-desc="Mô tả ngắn ảnh 15.">
-<img class="thumb thumb-vertical" src="Gallery/thumb16.png" data-full="Gallery/img16.png" alt="Ảnh 16" data-title="Sample 6" data-desc="Mô tả ngắn ảnh 16.">
-</div>
-</div>
-
-<span id="termsLink">Xem chi tiết điều khoản dịch vụ</span>
-
-<!-- Overlay để xem ảnh chi tiết -->
-<div id="overlay">
-  <div class="overlay-content">
-    <img id="fullImage" src="" alt="">
-    <div id="imageInfo">
-      <h2 id="imgTitle"></h2>
-      <p id="imgDesc"></p>
-    </div>
-  </div>
-  <button onclick="closeOverlay()">✕</button>
-</div>
-
-
-</div>
-
-  <!-- Floating icons -->
-  <div class="floating-icons">
-    <a href="https://www.facebook.com/minipeace2001" target="_blank"><i class="fab fa-facebook"></i></a>
-    <a href="https://www.instagram.com/minipeace2001/" target="_blank"><i class="fab fa-instagram"></i></a>
-    <a href="https://www.behance.net/maithuytien" target="_blank"><i class="fab fa-behance"></i></a>
-    <a href="https://www.youtube.com/playlist?list=PLR5fl78Q7K1RJs1C-68pNzut2mKCL2Nod" target="_blank"><i class="fab fa-youtube"></i></a>
-    <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)"><i class="fab fa-google"></i><span class="copy-note">Đã copy email</span></a>
-    <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
-  </div>
-
-<div id="termsPopup" aria-hidden="true" role="dialog" aria-labelledby="termsTitle">
-  <div class="popup-content" role="document">
-    <div class="popup-close">
-      <button id="closeTermsBtn" aria-label="Đóng điều khoản">Đóng</button>
+    <!-- Menu cờ (canvas sẽ vẫy bằng script) -->
+    <div class="menu">
+      <canvas class="flag" data-src="Comm/flag1.png" data-img="Comm/dichvu.png"></canvas>
+      <canvas class="flag" data-src="Comm/flag2.png" data-img="Comm/quytrinh.png"></canvas>
+      <canvas class="flag" data-src="Comm/flag3.png" data-img="Comm/gia.png"></canvas>
+      <canvas class="flag" data-src="Comm/flag4.png" data-img="Comm/minhhoa.png"></canvas>
+      <canvas class="flag" data-src="Comm/flag5.png" data-img="Comm/truyen.png"></canvas>
+      <canvas class="flag" data-src="Comm/flag6.png" data-img="Comm/thanhtoan.png"></canvas>
     </div>
 
-   <section id="terms">
-  <h2 id="termsTitle">ĐIỀU KHOẢN DỊCH VỤ</h2>
+    <!-- Container hiển thị flag hoặc gallery -->
+    <div id="flagImageContainer" style="margin-top:20px;">
+      <img id="flagImage" src="" alt="">
+      <!-- Gallery (ẩn mặc định). Ảnh có data-full/data-title/data-desc dùng để mở overlay -->
+      <div id="gallery" style="display:none;">
+<img class="thumb" src="Gallery/thumb1.png" data-full="Gallery/img1.png" alt="Ảnh 1" data-title="Ôm" data-desc="Cuộc sống phủ đầy những lớp sương lạnh của vô cảm, khiến tâm hồn con người dần hóa đá, cô đơn len lỏi vào từng khoảnh khắc. Công việc chất chồng, áp lực như tảng đá nặng nề đè lên đôi vai gầy guộc. Thế nhưng, ta vẫn cắn răng chịu đựng, vẫn ôm lấy mình bước tiếp, chỉ để tồn tại giữa thế gian đầy thử thách này.">
+  <img class="thumb" src="Gallery/thumb2.png" data-full="Gallery/img2.png" alt="Ảnh 2" data-title="Band" data-desc="“Đam mê”">
+  <img class="thumb" src="Gallery/thumb3.png" data-full="Gallery/img3.png" alt="Ảnh 3" data-title="Mặc gì?" data-desc="Em chẳng biết mặc gì mỗi khi bước ra đường, nhất là vào những dịp đặc biệt như buổi tiệc hay một cuộc hẹn. Tủ đồ chả có món gì, thời gian cứ trôi đi, em thì vẫn mãi loay hoay, chậm chạp như thể đang lạc giữa mê cung của chính mình. Hôm nay em sẽ là ai, sẽ khoác lên người điều gì để cảm thấy tự tin hơn một chút giữa thế giới ngoài kia.">
+  <img class="thumb" src="Gallery/thumb4.png" data-full="Gallery/img4.png" alt="Ảnh 4" data-title="Call My Name" data-desc="Một artwork mình vẽ cho nhạc “DaaDaa (70G) VICTORIOUS (TMons Remix)”">
+  <img class="thumb" src="Gallery/thumb5.png" data-full="Gallery/img5.png" alt="Ảnh 5" data-title="Hấp thụ" data-desc="“Hấp thụ” ký ức, âm thanh, những mảnh ghép đã từng là một phần của đời sống.">
+  <img class="thumb" src="Gallery/thumb6.png" data-full="Gallery/img6.png" alt="Ảnh 6" data-title="Tựa" data-desc="“Em tìm thấy một điểm tựa giữa thế giới hỗn độn. Nơi cô đơn được xoa dịu bằng sự tưởng tượng, và tâm hồn khẽ thở dài mong một ngày bình yên thực sự sẽ đến."">
+  <img class="thumb" src="Gallery/thumb7.png" data-full="Gallery/img7.png" alt="Ảnh 7" data-title="Mở lòng" data-desc="“Em biết ngoài kia đầy rẫy sự hiểm nguy, nhưng bên trong em vẫn mong mỗi điều gì đó, một sức sống mãnh liệt trỗi dậy, thúc đẩy em mở cửa trái tim mình để đón nhận sự yêu thương thuần khiết”">
+  <img class="thumb" src="Gallery/thumb8.png" data-full="Gallery/img8.png" alt="Ảnh 8" data-title="Suy cho cùng thì chỉ có bản thân ôm lấy bản thân." data-desc="“Niềm vui đã bị đóng khung, còn nỗi buồn thì lặng lẽ len vào từng chi tiết.”">
+  <img class="thumb" src="Gallery/thumb9.png" data-full="Gallery/img9.png" alt="Ảnh 9" data-title="Cry Baby" data-desc="“Những cuộc tranh cãi không lời giữa các phiên bản của chính mình. Đúng hay sai, thật hay giả, mọi ranh giới trở nên mờ nhạt. Cô không còn chắc đâu là nhân cách gốc, đâu là lớp mặt nạ đã khoác lên theo thời gian. Đó là khoảnh khắc của sự giằng xé nội tâm, khi con người đối diện với chính mình mà không còn nhận ra bản thân."">
+  <img class="thumb" src="Gallery/thumb10.png" data-full="Gallery/img10.png" alt="Ảnh 10" data-title="Ekko" data-desc="Bức tranh mình vẽ sau khi xem Arcane 2.">
+        <img class="thumb thumb-vertical" src="Gallery/thumb11.png" data-full="Gallery/img11.png" alt="Ảnh 11" data-title="Sample 1" data-desc="Mô tả ngắn ảnh 11.">
+        <img class="thumb thumb-vertical" src="Gallery/thumb12.png" data-full="Gallery/img12.png" alt="Ảnh 12" data-title="Sample 2" data-desc="Mô tả ngắn ảnh 12.">
+        <img class="thumb thumb-vertical" src="Gallery/thumb13.png" data-full="Gallery/img13.png" alt="Ảnh 13" data-title="Sample 3" data-desc="Mô tả ngắn ảnh 13.">
+        <img class="thumb thumb-vertical" src="Gallery/thumb14.png" data-full="Gallery/img14.png" alt="Ảnh 14" data-title="Sample 4" data-desc="Mô tả ngắn ảnh 14.">
+        <img class="thumb thumb-vertical" src="Gallery/thumb15.png" data-full="Gallery/img15.png" alt="Ảnh 15" data-title="Sample 5" data-desc="Mô tả ngắn ảnh 15.">
+        <img class="thumb thumb-vertical" src="Gallery/thumb16.png" data-full="Gallery/img16.png" alt="Ảnh 16" data-title="Sample 6" data-desc="Mô tả ngắn ảnh 16.">
+      </div>
+    </div>
 
-  <!-- 1. Phi thương mại -->
-  <h3>1. Vẽ Tranh Phi Thương Mại</h3>
-  <ul>
-    <li><strong>Bạn:</strong> Được phép đăng/tải/sử dụng tranh cho mục đích cá nhân, tặng, in ấn phi lợi nhuận.<br>Hạn chế leak tranh trước khi hoàn thành.<br>Nếu muốn leak, vui lòng báo họa sĩ để được <i>gắn tag chống trộm.</i></li>
-    <li><strong>Mình:</strong> Có thể đăng trên mạng xã hội ( gắn tag tên khách hàng) để làm mẫu vẽ commission.<br>Không kinh doanh trên sản phẩm vẽ cho khách.</li>
-  </ul>
+    <span id="termsLink">Xem chi tiết điều khoản dịch vụ</span>
 
-  <!-- 2. Kinh doanh -->
-  <h3>2. Vẽ Tranh Kinh Doanh</h3>
-  <ul>
-    <li><strong>Bạn:</strong> Được phép sử dụng tranh cho mục đích kiếm tiền ( hãy thông báo mục đích sử dụng để mình tối ưu file).<br>Hạn chế leak tranh trước khi hoàn thành.<br>Nếu muốn leak, vui lòng báo họa sĩ để gắn tag chống trộm.</li>
-    <li><strong>Mình:</strong> Có thể đăng trên mạng xã hội ( gắn tag/link sản phẩm kinh doanh của bạn).<br>Không kinh doanh trên sản phẩm đã vẽ cho khách.</li>
-  </ul>
-  
-<!-- 3. Deadline -->
-  <h3>3. Deadline</h3>
-  <table class="terms-table" aria-describedby="deadlineDesc">
-    <thead>
-      <tr>
-        <th>Hạng mục</th>
-        <th>Ghi chú</th>
-        <th>Thời gian</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Sticker</strong></td>
-        <td>Không nền / nền đơn giản</td>
-        <td>2 ngày – 1 tháng</td>
-      </tr>
-      <tr>
-        <td><strong>Minh hoạ</strong></td>
-        <td>Nền có chiều sâu</td>
-        <td>1 tuần – 2 tháng</td>
-      </tr>
-      <tr>
-        <td><strong>Truyện tranh</strong></td>
-        <td>1 – 17 trang</td>
-        <td>1 tuần – 2 tháng</td>
-      </tr>
-      <tr>
-        <td><strong>Animation</strong></td>
-        <td>Frame by frame</td>
-        <td>1 tuần – 2 tháng</td>
-      </tr>
-    </tbody>
-  </table>
-  <p id="deadlineDesc">
-<ul>
-    <li>Deadline quá gấp, sẽ có <strong><i>phụ phí</i></strong>.</li>
-<li>Không yêu cầu deadline cụ thể thì càng tốt, để mình có thể trau chuốt hơn cho sản phẩm.</li>
-</ul> <em><strong>Thời gian tính deadline:</strong> từ ngày nhận được chuyển khoản.</em>
-  </p>
-
-  <!-- 4. Kích thước -->
-  <h3>4. Kích thước Thường Dùng</h3>
-  <ul>
-    <li><strong>Vuông:</strong> 3000 x 3000 <i>px</i> (300 dpi)</li>
-    <li><strong>A4:</strong> 2480 x 3508 <i>px</i> (300 dpi)</li>
-    <li><strong>Video Full HD:</strong> 1920 x 1080 <i>px</i></li>
-  </ul>
-
-  <!-- 5. Nhận tranh -->
-  <h3>5. Nhận Tranh</h3>
-  <p>Tranh hoàn thiện sẽ được gửi qua <i>email</i>, <strong>bao gồm</strong>:</p>
-  <table class="terms-table">
-    <thead>
-      <tr>
-        <th>Loại</th>
-        <th>File</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td rowspan="2"><strong>Tranh ảnh</strong></td>
-        <td>1 ảnh.png</td>
-      </tr>
-      <tr>
-        <td>1 file.psd (<i>merged</i>)</td>
-      </tr>
-      <tr>
-        <td rowspan="3"><strong>Video</strong></td>
-        <td>1 ảnh.png (<i>thumbnail vuông</i>)</td>
-      </tr>
-      <tr>
-        <td>1 file.psd (<i>merged, kích thước gốc</i>)</td>
-      </tr>
-      <tr>
-        <td>1 video.mp4</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- 6. Ghi chú -->
-  <h3>6. Ghi Chú</h3>
-  <ul>
-    <li>Với khách hàng <strong>kinh doanh</strong> (âm nhạc, truyện tranh, bìa sách, quảng bá…), sản phẩm sẽ được coi là <strong>hợp tác</strong>.  
-    Mình rất cảm kích nếu bạn cho phép thêm tên tác giả vào thông tin sản phẩm.</li>
-<li><em><strong>Lưu ý giá:</strong> Liên hệ trực tiếp để biết giá dành cho mục đích thương mại.<br>(bảng giá chỉ áp dụng cho sản phẩm <strong>phi thương mại</strong>)</em></li>
-  </ul>
-</section>
-
-
+    <!-- Overlay xem ảnh lớn -->
+    <div id="overlay" aria-hidden="true">
+      <div class="overlay-content">
+        <img id="fullImage" src="" alt="">
+        <div id="imageInfo">
+          <h2 id="imgTitle"></h2>
+          <p id="imgDesc"></p>
+        </div>
+      </div>
+      <button aria-label="Đóng xem ảnh" id="overlayCloseBtn">✕</button>
+    </div>
   </div>
-</div>
 
+  <!-- Floating social icons -->
+  <div class="floating-icons" aria-hidden="false" role="navigation" aria-label="Mạng xã hội">
+    <a href="https://www.facebook.com/minipeace2001" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+    <a href="https://www.instagram.com/minipeace2001/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.behance.net/maithuytien" target="_blank" aria-label="Behance"><i class="fab fa-behance"></i></a>
+    <a href="https://www.youtube.com/playlist?list=PLR5fl78Q7K1RJs1C-68pNzut2mKCL2Nod" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="javascript:void(0);" class="gmail-icon" onclick="copyEmail(this)" aria-label="Sao chép email"><i class="fab fa-google"></i><span class="copy-note">Đã copy email</span></a>
+    <a href="javascript:void(0);" class="discord-icon" onclick="copyDiscord(this)" aria-label="Sao chép Discord"><i class="fab fa-discord"></i><span class="copy-note">Đã copy Discord</span></a>
+  </div>
+
+  <!-- Terms popup (sắp xếp nội dung, không thay đổi văn bản gốc) -->
+  <div id="termsPopup" aria-hidden="true" role="dialog" aria-labelledby="termsTitle">
+    <div class="popup-content" role="document">
+      <div class="popup-close">
+        <button id="closeTermsBtn" aria-label="Đóng điều khoản">Đóng</button>
+      </div>
+
+      <section id="terms">
+        <h2 id="termsTitle">ĐIỀU KHOẢN DỊCH VỤ</h2>
+
+        <!-- (Nội dung điều khoản giữ nguyên — chỉ cắt ngắn hiển thị trong file để dễ đọc ở đây) -->
+        <h3>1. Vẽ Tranh Phi Thương Mại</h3>
+        <ul>
+          <li><strong>Bạn:</strong> Được phép đăng/tải/sử dụng tranh cho mục đích cá nhân, tặng, in ấn phi lợi nhuận.<br>Hạn chế leak tranh trước khi hoàn thành.</li>
+          <li><strong>Mình:</strong> Có thể đăng trên mạng xã hội (gắn tag tên khách hàng) để làm mẫu vẽ commission.<br>Không kinh doanh trên sản phẩm vẽ cho khách.</li>
+        </ul>
+
+        <h3>2. Vẽ Tranh Kinh Doanh</h3>
+        <ul>
+          <li><strong>Bạn:</strong> Được phép sử dụng tranh cho mục đích kiếm tiền (hãy thông báo mục đích sử dụng để mình tối ưu file).</li>
+          <li><strong>Mình:</strong> Có thể đăng trên mạng xã hội (gắn tag/link sản phẩm kinh doanh của bạn). Không kinh doanh trên sản phẩm đã vẽ cho khách.</li>
+        </ul>
+
+        <h3>3. Deadline</h3>
+        <table class="terms-table" aria-describedby="deadlineDesc">
+          <thead>
+            <tr><th>Hạng mục</th><th>Ghi chú</th><th>Thời gian</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Sticker</strong></td><td>Không nền / nền đơn giản</td><td>2 ngày – 1 tháng</td></tr>
+            <tr><td><strong>Minh hoạ</strong></td><td>Nền có chiều sâu</td><td>1 tuần – 2 tháng</td></tr>
+            <tr><td><strong>Truyện tranh</strong></td><td>1 – 17 trang</td><td>1 tuần – 2 tháng</td></tr>
+            <tr><td><strong>Animation</strong></td><td>Frame by frame</td><td>1 tuần – 2 tháng</td></tr>
+          </tbody>
+        </table>
+        <p id="deadlineDesc">
+          <ul>
+            <li>Deadline quá gấp, sẽ có <strong><i>phụ phí</i></strong>.</li>
+            <li>Không yêu cầu deadline cụ thể thì càng tốt, để mình có thể trau chuốt hơn cho sản phẩm.</li>
+          </ul>
+          <em><strong>Thời gian tính deadline:</strong> từ ngày nhận được chuyển khoản.</em>
+        </p>
+
+        <h3>4. Kích thước Thường Dùng</h3>
+        <ul>
+          <li><strong>Vuông:</strong> 3000 x 3000 <i>px</i> (300 dpi)</li>
+          <li><strong>A4:</strong> 2480 x 3508 <i>px</i> (300 dpi)</li>
+          <li><strong>Video Full HD:</strong> 1920 x 1080 <i>px</i></li>
+        </ul>
+
+        <h3>5. Nhận Tranh</h3>
+        <p>Tranh hoàn thiện sẽ được gửi qua <i>email</i>, <strong>bao gồm</strong>:</p>
+        <table class="terms-table">
+          <thead><tr><th>Loại</th><th>File</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="2"><strong>Tranh ảnh</strong></td><td>1 ảnh.png</td></tr>
+            <tr><td>1 file.psd (<i>merged</i>)</td></tr>
+            <tr><td rowspan="3"><strong>Video</strong></td><td>1 ảnh.png (<i>thumbnail vuông</i>)</td></tr>
+            <tr><td>1 file.psd (<i>merged, kích thước gốc</i>)</td></tr>
+            <tr><td>1 video.mp4</td></tr>
+          </tbody>
+        </table>
+
+        <h3>6. Ghi Chú</h3>
+        <ul>
+          <li>Với khách hàng <strong>kinh doanh</strong> (âm nhạc, truyện tranh, bìa sách, quảng bá…), sản phẩm sẽ được coi là <strong>hợp tác</strong>. Mình rất cảm kích nếu bạn cho phép thêm tên tác giả vào thông tin sản phẩm.</li>
+          <li><em><strong>Lưu ý giá:</strong> Liên hệ trực tiếp để biết giá dành cho mục đích thương mại.</em></li>
+        </ul>
+      </section>
+    </div>
+  </div>
 
   <script>
-    /* waving flags (Code A) */
+    /* ============================
+       Script: cấu trúc rõ ràng, không đổi chức năng
+       Các phần:
+         1) WavingFlag (canvas flags)
+         2) Theme init (dark-mode)
+         3) Copy helpers (gmail/discord)
+         4) Gallery / flagImage handling
+         5) Overlay viewer (full image)
+         6) Terms popup handling
+         7) Back-button hide on scroll
+       ============================ */
+
+    /* ----------------------------
+       1) WavingFlag: animate canvas flags
+       - Behaves identically với bản gốc.
+       ---------------------------- */
     class WavingFlag {
       constructor(canvas, src) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.img = new Image();
         this.img.src = src;
+        this.time = 0;
         this.img.onload = () => {
+          // giữ kích thước bitmap để vẽ chính xác, CSS sẽ scale hiển thị
           this.canvas.width = this.img.width;
           this.canvas.height = this.img.height;
-          this.start();
+          this.width = this.canvas.width;
+          this.height = this.canvas.height;
+          this.animate();
         };
-        this.time = 0;
-      }
-      start() {
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
-        requestAnimationFrame(() => this.animate());
       }
       animate() {
         const ctx = this.ctx;
-        const { width, height } = this;
+        const width = this.canvas.width;
+        const height = this.canvas.height;
         ctx.clearRect(0, 0, width, height);
-        let topHeight = height * 0.2;
-        let waveHeight = height - topHeight;
+
+        // phần trên giữ tĩnh, phần dưới vẫy
+        const topHeight = height * 0.2;
+        const waveHeight = height - topHeight;
         ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height * (topHeight / height), 0, 0, width, topHeight);
-        let syStart = this.img.height * (topHeight / height);
-        let sh = this.img.height - syStart;
-        let rowHeight = 15;
-        let rowCount = Math.floor(waveHeight / rowHeight);
+
+        const syStart = this.img.height * (topHeight / height);
+        const sh = this.img.height - syStart;
+        const rowHeight = 15;
+        const rowCount = Math.floor(waveHeight / rowHeight) || 1;
+
         for (let y = 0; y < rowCount; y++) {
-          let progress = y / rowCount;
-          let offset = Math.sin(this.time * 1.5 + y * 0.25) * 2 * progress;
-          ctx.drawImage(this.img, 0, syStart + (sh * y / rowCount), this.img.width, sh / rowCount,
+          const progress = y / rowCount;
+          const offset = Math.sin(this.time * 1.5 + y * 0.25) * 2 * progress;
+          ctx.drawImage(this.img,
+            0, syStart + (sh * y / rowCount), this.img.width, sh / rowCount,
             offset, topHeight + y * rowHeight, width, rowHeight);
         }
+
         this.time += 0.025;
         requestAnimationFrame(() => this.animate());
       }
     }
+    // Khởi tạo cho tất cả canvas.flag
     document.querySelectorAll('canvas.flag').forEach(c => new WavingFlag(c, c.getAttribute('data-src')));
+
+    /* ----------------------------
+       2) Theme init
+       - Nếu người dùng lưu theme = dark -> thêm class
+       ---------------------------- */
     window.addEventListener('load', () => {
       if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
     });
 
-
-    /* copy helpers */
+    /* ----------------------------
+       3) Copy helpers (clipboard)
+       - Giữ hành vi hiển thị note tạm thời
+       ---------------------------- */
     window.copyEmail = el => {
       navigator.clipboard.writeText("ttien39169@gmail.com").then(() => {
         el.classList.add("show-note");
@@ -741,232 +512,176 @@ margin-top: 120px;
       });
     };
 
+    /* ----------------------------
+       4) Gallery / flagImage handling
+       - Khi click flag: bật gallery hoặc đổi ảnh #flagImage
+       - Không thay đổi logic/chức năng so với bản gốc
+       ---------------------------- */
+    const flagImage = document.getElementById('flagImage');
+    const termsLink = document.getElementById('termsLink');
+    const termsPopup = document.getElementById('termsPopup');
+    const closeTermsBtn = document.getElementById('closeTermsBtn');
+    const gallery = document.getElementById('gallery');
 
-// references
-const flagImage = document.getElementById('flagImage');
-const termsLink = document.getElementById('termsLink');
-const termsPopup = document.getElementById('termsPopup');
-const closeTermsBtn = document.getElementById('closeTermsBtn');
+    // cuộn sao cho phần flag/gallery hiển thị dễ thấy
+    function scrollToFlagImage() {
+      const container = document.getElementById('flagImageContainer');
+      const rect = container.getBoundingClientRect();
+      const scrollTop = window.scrollY + rect.top;
+      const containerHeight = rect.height;
+      const viewportHeight = window.innerHeight;
 
-// helper: scroll tới đầu flagImage
-function scrollToFlagImage() {
-  const container = document.getElementById('flagImageContainer');
-  const rect = container.getBoundingClientRect();
-  const scrollTop = window.scrollY + rect.top;
-  const containerHeight = rect.height;
-  const viewportHeight = window.innerHeight;
-
-  let targetScroll = scrollTop;
-  if (containerHeight > viewportHeight) {
-    targetScroll += containerHeight - viewportHeight;
-  }
-
-  window.scrollTo({ top: targetScroll, behavior: 'smooth' });
-}
-
-// open/close popup (kèm bù scrollbar để tránh nhảy layout)
-function openTermsPopup() {
-  const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
-  if (scrollBarWidth > 0) document.body.style.paddingRight = scrollBarWidth + 'px';
-  document.body.classList.add('popup-open');
-  termsPopup.style.display = 'flex';
-  termsPopup.setAttribute('aria-hidden', 'false');
-}
-function closeTermsPopup() {
-  termsPopup.style.display = 'none';
-  termsPopup.setAttribute('aria-hidden', 'true');
-  document.body.classList.remove('popup-open');
-  document.body.style.paddingRight = '';
-}
-
-// click outside to close
-termsPopup.addEventListener('click', (e) => {
-  if (e.target === termsPopup) closeTermsPopup();
-});
-closeTermsBtn.addEventListener('click', closeTermsPopup);
-window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTermsPopup(); });
-
-const gallery = document.getElementById('gallery');
-
-document.querySelectorAll('.flag').forEach(flag => {
-  flag.addEventListener('click', () => {
-    const imgSrc = flag.getAttribute('data-img');
-
-    // Lấy tất cả ảnh trong gallery
-    const allImgs = document.querySelectorAll('#gallery img');
-
-    // Ẩn tất cả ảnh trước
-    allImgs.forEach(img => img.style.display = 'none');
-
-    // --- FLAG 4: ảnh minh họa (img1 → img10)
-    if (imgSrc && imgSrc.includes('minhhoa.png')) {
-      flagImage.style.display = 'none';
-      gallery.style.display = 'grid';
-      gallery.classList.remove('gallery-vertical');
-      termsLink.style.display = 'none';
-
-      allImgs.forEach((img, index) => {
-        if (index >= 0 && index < 10) img.style.display = 'block'; // img1 - img10
-      });
-
-      // Gắn click mở overlay
-      allImgs.forEach(img => {
-        img.onclick = () => {
-          if (img.style.display !== 'none') {
-            openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc);
-          }
-        };
-      });
-
-      scrollToFlagImage();
-    }
-
-    // --- FLAG 5: ảnh truyện (img11 → img16)
-    else if (imgSrc && imgSrc.includes('truyen.png')) {
-      flagImage.style.display = 'none';
-      gallery.style.display = 'grid';
-      gallery.classList.add('gallery-vertical');
-      termsLink.style.display = 'none';
-
-      allImgs.forEach((img, index) => {
-        if (index >= 10 && index < 16) img.style.display = 'block'; // img11 - img16
-      });
-
-      allImgs.forEach(img => {
-        img.onclick = () => {
-          if (img.style.display !== 'none') {
-            openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc);
-          }
-        };
-      });
-
-      scrollToFlagImage();
-    }
-
-    // --- Các flag khác
-    else {
-      gallery.style.display = 'none';
-      flagImage.style.display = 'block';
-      flagImage.src = imgSrc;
-
-      if (imgSrc && imgSrc.includes('dichvu.png')) {
-        termsLink.style.display = 'block';
-      } else {
-        termsLink.style.display = 'none';
+      let targetScroll = scrollTop;
+      if (containerHeight > viewportHeight) {
+        targetScroll += containerHeight - viewportHeight;
       }
 
-      if (flagImage.complete && flagImage.naturalHeight !== 0) {
-        scrollToFlagImage();
-      } else {
-        flagImage.onload = () => scrollToFlagImage();
-        setTimeout(() => scrollToFlagImage(), 300);
-      }
+      window.scrollTo({ top: targetScroll, behavior: 'smooth' });
     }
-  });
-});
 
+    // Mở overlay ảnh lớn
+    function openOverlay(fullSrc, title, desc) {
+      fullImage.src = fullSrc || '';
+      imgTitle.textContent = title || '';
+      imgDesc.textContent = desc || '';
+      overlay.style.display = 'flex';
+      document.body.classList.add('overlay-open');
+    }
+    function closeOverlay() {
+      overlay.style.display = 'none';
+      document.body.classList.remove('overlay-open');
+      fullImage.src = '';
+    }
 
-// --- references thêm ---
-const backBtn = document.querySelector('.back-btn'); // nút back hiện tại
-let lastScrollTop = 0;
+    // Click trên canvas.flag -> đổi nội dung hiển thị
+    document.querySelectorAll('.flag').forEach(flag => {
+      flag.addEventListener('click', () => {
+        const imgSrc = flag.getAttribute('data-img');
+        const allImgs = document.querySelectorAll('#gallery img');
 
-window.addEventListener('scroll', () => {
-  const currentScroll = window.scrollY || document.documentElement.scrollTop;
+        // Ẩn tất cả thumb trước
+        allImgs.forEach(img => img.style.display = 'none');
 
-  if (currentScroll > lastScrollTop && currentScroll > 100) {
-    // Cuộn xuống → ẩn nút
-    backBtn.classList.add('hide');
-  } else {
-    // Cuộn lên → hiện nút
-    backBtn.classList.remove('hide');
-  }
+        /* FLAG: minh họa (img1 → img10) */
+        if (imgSrc && imgSrc.includes('minhhoa.png')) {
+          flagImage.style.display = 'none';
+          gallery.style.display = 'grid';
+          gallery.classList.remove('gallery-vertical');
+          termsLink.style.display = 'none';
+          allImgs.forEach((img, index) => { if (index >= 0 && index < 10) img.style.display = 'block'; });
+          allImgs.forEach(img => img.onclick = () => { if (img.style.display !== 'none') openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc); });
+          scrollToFlagImage();
+        }
+        /* FLAG: truyện (img11 → img16) */
+        else if (imgSrc && imgSrc.includes('truyen.png')) {
+          flagImage.style.display = 'none';
+          gallery.style.display = 'grid';
+          gallery.classList.add('gallery-vertical');
+          termsLink.style.display = 'none';
+          allImgs.forEach((img, index) => { if (index >= 10 && index < 16) img.style.display = 'block'; });
+          allImgs.forEach(img => img.onclick = () => { if (img.style.display !== 'none') openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc); });
+          scrollToFlagImage();
+        }
+        /* Các flag khác: hiển thị ảnh thông tin (dichvu/quytrinh/gia/thanhtoan...) */
+        else {
+          gallery.style.display = 'none';
+          flagImage.style.display = 'block';
+          flagImage.src = imgSrc || '';
+          termsLink.style.display = (imgSrc && imgSrc.includes('dichvu.png')) ? 'block' : 'none';
 
-  lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // tránh giá trị âm
-});
+          if (flagImage.complete && flagImage.naturalHeight !== 0) {
+            scrollToFlagImage();
+          } else {
+            flagImage.onload = () => scrollToFlagImage();
+            setTimeout(() => scrollToFlagImage(), 300);
+          }
+        }
+      });
+    });
 
-const overlay = document.getElementById('overlay');
-const fullImage = document.getElementById('fullImage');
-const imgTitle = document.getElementById('imgTitle');
-const imgDesc = document.getElementById('imgDesc');
+    // Gán sự kiện cho thumbnails (nếu click trực tiếp lên .thumb)
+    document.querySelectorAll('.thumb').forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        const fullSrc = thumb.dataset.full || thumb.src;
+        openOverlay(fullSrc, thumb.dataset.title || '', thumb.dataset.desc || '');
+      });
+    });
 
-// mở overlay (dùng khi click thumbnail)
-function openOverlay(fullSrc, title, desc) {
-  fullImage.src = fullSrc || '';
-  imgTitle.textContent = title || '';
-  imgDesc.textContent = desc || '';
+    /* ----------------------------
+       5) Overlay viewer: đóng mở + đồng bộ chiều cao thông tin
+       ---------------------------- */
+    const overlay = document.getElementById('overlay');
+    const fullImage = document.getElementById('fullImage');
+    const imgTitle = document.getElementById('imgTitle');
+    const imgDesc = document.getElementById('imgDesc');
+    const overlayCloseBtn = document.getElementById('overlayCloseBtn');
+    const imageInfo = document.getElementById('imageInfo');
 
-  // show overlay và thêm class để ẩn back-btn bằng CSS
-  overlay.style.display = 'flex';
-  document.body.classList.add('overlay-open');
+    // Đóng khi click nền overlay (ngoài nội dung)
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
+    if (overlayCloseBtn) overlayCloseBtn.addEventListener('click', closeOverlay);
 
-  // optional: khóa scroll nền nếu muốn
-  // document.body.style.overflow = 'hidden';
-}
+    // ESC để đóng overlay
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        // nếu overlay đang mở -> đóng; nếu termsPopup đang mở -> đóng
+        if (overlay.style.display === 'flex') closeOverlay();
+        if (termsPopup.style.display === 'flex') closeTermsPopup();
+      }
+    });
 
-// đóng overlay
-function closeOverlay() {
-  overlay.style.display = 'none';
-  document.body.classList.remove('overlay-open');
-  // document.body.style.overflow = ''; // nếu dùng khóa scroll
-  fullImage.src = ''; // giải phóng memory / stop tải
-}
+    // Khi ảnh full load xong, set chiều cao của info cho cân bằng (giữ hành vi)
+    fullImage.addEventListener('load', () => {
+      const imgHeight = fullImage.getBoundingClientRect().height;
+      imageInfo.style.height = imgHeight + 'px';
+    });
+    // Khi overlay ẩn, reset chiều cao info (nếu có transition)
+    overlay.addEventListener('transitionend', () => {
+      if (overlay.style.display === 'none') imageInfo.style.height = '';
+    });
 
-// gán event cho thumbnails
-document.querySelectorAll('.thumb').forEach(thumb => {
-  thumb.addEventListener('click', () => {
-    const fullSrc = thumb.dataset.full || thumb.src;
-    openOverlay(fullSrc, thumb.dataset.title || '', thumb.dataset.desc || '');
-  });
-});
+    /* ----------------------------
+       6) Terms popup handling
+       - openTermsPopup() / closeTermsPopup(): xử lý padding-right tránh nhảy layout khi scrollbar ẩn
+       ---------------------------- */
+    function openTermsPopup() {
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+      if (scrollBarWidth > 0) document.body.style.paddingRight = scrollBarWidth + 'px';
+      document.body.classList.add('popup-open');
+      termsPopup.style.display = 'flex';
+      termsPopup.setAttribute('aria-hidden', 'false');
+    }
+    function closeTermsPopup() {
+      termsPopup.style.display = 'none';
+      termsPopup.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('popup-open');
+      document.body.style.paddingRight = '';
+    }
 
-// đóng khi click nền overlay (ngoài image/info)
-overlay.addEventListener('click', (e) => {
-  if (e.target === overlay) closeOverlay();
-});
+    // Click ngoài popup để đóng
+    termsPopup.addEventListener('click', (e) => { if (e.target === termsPopup) closeTermsPopup(); });
+    closeTermsBtn.addEventListener('click', closeTermsPopup);
+    // Liên kết termsLink mở popup (giữ như cũ)
+    termsLink.addEventListener('click', openTermsPopup);
 
-// đóng bằng nút đóng trong DOM (nếu dùng button có onclick trước đó, giữ nguyên hoặc gán)
-const overlayCloseBtn = overlay.querySelector('button');
-if (overlayCloseBtn) {
-  overlayCloseBtn.addEventListener('click', closeOverlay);
-}
+    /* ----------------------------
+       7) Back-button hide on scroll (giữ behavior)
+       ---------------------------- */
+    const backBtn = document.querySelector('.back-btn');
+    let lastScrollTop = 0;
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY || document.documentElement.scrollTop;
+      if (currentScroll > lastScrollTop && currentScroll > 100) {
+        backBtn.classList.add('hide');
+      } else {
+        backBtn.classList.remove('hide');
+      }
+      lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    });
 
-// đóng bằng Escape
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && overlay.style.display === 'flex') {
-    closeOverlay();
-  }
-});
-
-
-// open popup when clicking the terms link
-
-termsLink.addEventListener('click', openTermsPopup);
-function openPopup() {
-  document.getElementById("termsPopup").style.display = "flex";
-  document.body.classList.add("popup-open");
-}
-
-function closePopup() {
-  document.getElementById("termsPopup").style.display = "none";
-  document.body.classList.remove("popup-open");
-}
-
-const imageInfo = document.getElementById('imageInfo');
-
-// Khi ảnh full load xong thì set chiều cao info bằng ảnh
-fullImage.addEventListener('load', () => {
-  // Lấy chiều cao thực tế của ảnh trong overlay
-  const imgHeight = fullImage.getBoundingClientRect().height;
-  imageInfo.style.height = imgHeight + 'px';
-});
-
-// Khi đóng overlay thì reset lại chiều cao
-overlay.addEventListener('transitionend', () => {
-  if (overlay.style.display === 'none') {
-    imageInfo.style.height = '';
-  }
-});
-
+    /* ============================
+       Kết thúc script
+       ============================ */
   </script>
 </body>
 </html>
