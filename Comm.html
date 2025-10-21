@@ -272,6 +272,18 @@ body.popup-open { overflow: hidden; }
   margin: 30px auto 0;    /* căn giữa */
   width: 100%;  
 }
+/* layout riêng cho ảnh vertical (truyện) */
+#gallery.gallery-vertical {
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
+  gap: 25px;
+  justify-items: center;
+}
+#gallery.gallery-vertical .thumb-vertical {
+  aspect-ratio: 1/1.4142;
+  width: 100%;
+  height: auto;
+}
+
 .thumb {
     width: 100%;
     aspect-ratio: 1/1;
@@ -338,6 +350,7 @@ cursor: url('assets/chi.png') 16 16, pointer;
   max-height: 90vh;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+cursor: url('assets/chi.png') 16 16, pointer;
 }
 
 #imageInfo h2 {
@@ -493,11 +506,12 @@ margin-top: 120px;
   <img class="thumb" src="Gallery/thumb8.png" data-full="Gallery/img8.png" alt="Ảnh 8" data-title="Ảnh minh họa 8" data-desc="Mô tả ngắn về ảnh 8.">
   <img class="thumb" src="Gallery/thumb9.png" data-full="Gallery/img9.png" alt="Ảnh 9" data-title="Ảnh minh họa 9" data-desc="Mô tả ngắn về ảnh 9.">
   <img class="thumb" src="Gallery/thumb10.png" data-full="Gallery/img10.png" alt="Ảnh 10" data-title="Ảnh minh họa 10" data-desc="Mô tả ngắn về ảnh 10.">
-<img class="thumb thumb-vertical" src="Gallery/thumb11.png" data-full="Gallery/img11.png" alt="Ảnh 11" data-title="Ảnh minh họa 11" data-desc="Mô tả ngắn ảnh 11.">
-<img class="thumb thumb-vertical" src="Gallery/thumb12.png" data-full="Gallery/img12.png" alt="Ảnh 12" data-title="Ảnh minh họa 12" data-desc="Mô tả ngắn ảnh 12.">
-<img class="thumb thumb-vertical" src="Gallery/thumb13.png" data-full="Gallery/img13.png" alt="Ảnh 13" data-title="Ảnh minh họa 13" data-desc="Mô tả ngắn ảnh 13.">
-<img class="thumb thumb-vertical" src="Gallery/thumb14.png" data-full="Gallery/img14.png" alt="Ảnh 14" data-title="Ảnh minh họa 14" data-desc="Mô tả ngắn ảnh 14.">
-<img class="thumb thumb-vertical" src="Gallery/thumb15.png" data-full="Gallery/img15.png" alt="Ảnh 15" data-title="Ảnh minh họa 15" data-desc="Mô tả ngắn ảnh 15.">
+<img class="thumb thumb-vertical" src="Gallery/thumb11.png" data-full="Gallery/img11.png" alt="Ảnh 11" data-title="Sample 1" data-desc="Mô tả ngắn ảnh 11.">
+<img class="thumb thumb-vertical" src="Gallery/thumb12.png" data-full="Gallery/img12.png" alt="Ảnh 12" data-title="Sample 2" data-desc="Mô tả ngắn ảnh 12.">
+<img class="thumb thumb-vertical" src="Gallery/thumb13.png" data-full="Gallery/img13.png" alt="Ảnh 13" data-title="Sample 3" data-desc="Mô tả ngắn ảnh 13.">
+<img class="thumb thumb-vertical" src="Gallery/thumb14.png" data-full="Gallery/img14.png" alt="Ảnh 14" data-title="Sample 4" data-desc="Mô tả ngắn ảnh 14.">
+<img class="thumb thumb-vertical" src="Gallery/thumb15.png" data-full="Gallery/img15.png" alt="Ảnh 15" data-title="Sample 5" data-desc="Mô tả ngắn ảnh 15.">
+<img class="thumb thumb-vertical" src="Gallery/thumb16.png" data-full="Gallery/img16.png" alt="Ảnh 16" data-title="Sample 6" data-desc="Mô tả ngắn ảnh 16.">
 </div>
 </div>
 
@@ -756,51 +770,58 @@ document.querySelectorAll('.flag').forEach(flag => {
   flag.addEventListener('click', () => {
     const imgSrc = flag.getAttribute('data-img');
 
-    // Nếu là flag minh họa (flag 4)
+    // Lấy tất cả ảnh trong gallery
+    const allImgs = document.querySelectorAll('#gallery img');
+
+    // Ẩn tất cả ảnh trước
+    allImgs.forEach(img => img.style.display = 'none');
+
+    // --- FLAG 4: ảnh minh họa (img1 → img10)
     if (imgSrc && imgSrc.includes('minhhoa.png')) {
       flagImage.style.display = 'none';
       gallery.style.display = 'grid';
+      gallery.classList.remove('gallery-vertical');
       termsLink.style.display = 'none';
 
-      // Gắn thumbnail 1–10
-      gallery.innerHTML = '';
-      for (let i = 1; i <= 10; i++) {
-        const img = document.createElement('img');
-        img.className = 'thumb';
-        img.src = `Gallery/thumb${i}.png`;
-        img.dataset.full = `Gallery/img${i}.png`;
-        img.dataset.title = `Ảnh minh họa ${i}`;
-        img.dataset.desc = `Mô tả ngắn về ảnh ${i}`;
-        img.addEventListener('click', () => openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc));
-        gallery.appendChild(img);
-      }
+      allImgs.forEach((img, index) => {
+        if (index >= 0 && index < 10) img.style.display = 'block'; // img1 - img10
+      });
+
+      // Gắn click mở overlay
+      allImgs.forEach(img => {
+        img.onclick = () => {
+          if (img.style.display !== 'none') {
+            openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc);
+          }
+        };
+      });
 
       scrollToFlagImage();
     }
 
-    // Nếu là flag truyện (flag 5)
+    // --- FLAG 5: ảnh truyện (img11 → img16)
     else if (imgSrc && imgSrc.includes('truyen.png')) {
       flagImage.style.display = 'none';
       gallery.style.display = 'grid';
+      gallery.classList.add('gallery-vertical');
       termsLink.style.display = 'none';
 
-      // Gắn thumbnail 11–15
-      gallery.innerHTML = '';
-      for (let i = 11; i <= 15; i++) {
-        const img = document.createElement('img');
-        img.className = 'thumb thumb-vertical';
-        img.src = `Gallery/thumb${i}.png`;
-        img.dataset.full = `Gallery/img${i}.png`;
-        img.dataset.title = `Truyện ${i}`;
-        img.dataset.desc = `Mô tả ngắn về truyện ${i}`;
-        img.addEventListener('click', () => openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc));
-        gallery.appendChild(img);
-      }
+      allImgs.forEach((img, index) => {
+        if (index >= 10 && index < 16) img.style.display = 'block'; // img11 - img16
+      });
+
+      allImgs.forEach(img => {
+        img.onclick = () => {
+          if (img.style.display !== 'none') {
+            openOverlay(img.dataset.full, img.dataset.title, img.dataset.desc);
+          }
+        };
+      });
 
       scrollToFlagImage();
     }
 
-    // Còn lại là các flag khác → xử lý ảnh đơn như cũ
+    // --- Các flag khác
     else {
       gallery.style.display = 'none';
       flagImage.style.display = 'block';
