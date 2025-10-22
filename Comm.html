@@ -285,7 +285,7 @@ body.popup-open .back-btn { display: none !important; }
 }
 
 #gallery.gallery-vertical {
-  grid-template-columns: repeat(5, minmax(150px, 1fr));
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
   gap: 20px;
   justify-items: center;
 }
@@ -565,6 +565,8 @@ body.overlay-open .floating-icons {
 <img class="thumb thumb-vertical" src="Gallery/thumb18.png" data-full="Gallery/img18.png" alt="Ảnh 18" data-title="Sample 8" data-desc="Mô tả ngắn ảnh 18.">
 <img class="thumb thumb-vertical" src="Gallery/thumb19.png" data-full="Gallery/img19.png" alt="Ảnh 19" data-title="Sample 9" data-desc="Mô tả ngắn ảnh 19.">
 <img class="thumb thumb-vertical" src="Gallery/thumb20.png" data-full="Gallery/img20.png" alt="Ảnh 20" data-title="Sample 10" data-desc="Mô tả ngắn ảnh 20.">
+<img class="thumb thumb-vertical" src="Gallery/thumb21.png" data-full="Gallery/img21.png" alt="Ảnh 21" data-title="Sample 11" data-desc="Mô tả ngắn ảnh 21.">
+<img class="thumb thumb-vertical" src="Gallery/thumb22.png" data-full="Gallery/img22.png" alt="Ảnh 22" data-title="Sample 12" data-desc="Mô tả ngắn ảnh 22.">
 </div>
 </div>
 
@@ -899,7 +901,7 @@ document.querySelectorAll('.flag').forEach(flag => {
       scrollToFlagImage();
     }
 
-    // FLAG 5: Ảnh truyện (img11 → img16)
+    // FLAG 5: Ảnh truyện (img11 → img22)
     else if (imgSrc && imgSrc.includes('truyen.png')) {
       flagImage.style.display = 'none';
       gallery.style.display = 'grid';
@@ -907,7 +909,7 @@ document.querySelectorAll('.flag').forEach(flag => {
       termsLink.style.display = 'none';
 
       allImgs.forEach((img, index) => {
-        if (index >= 10 && index < 16) img.style.display = 'block';
+        if (index >= 10 && index < 22) img.style.display = 'block';
       });
 
       allImgs.forEach(img => {
