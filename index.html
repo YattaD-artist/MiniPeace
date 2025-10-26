@@ -981,7 +981,7 @@ function checkThemeHintVisibility() {
     clearTimeout(hintTimeout);
     hintTimeout = setTimeout(() => {
       themeHint.classList.remove('show');
-    }, 7000);
+    }, 10000);
   }
 }
 
@@ -1015,7 +1015,7 @@ window.addEventListener('scroll', checkThemeHintVisibility);
       themeHint.classList.remove('show');
       themeHint.setAttribute('aria-hidden', 'true');
       hideTimer = null;
-    }, 7000);
+    }, 10000);
   }
 
   // Click hint = click toggle, rồi ẩn hẳn luôn
