@@ -243,6 +243,61 @@ z-index: 10;
       pointer-events: auto;
       z-index: 9999;
     }
+/* THEME HINT (Page3) */
+.overlay-container.Page3 { position: relative; } /* đảm bảo chỗ đứng relative */
+
+#theme-hint {
+  position: absolute;
+      left: 80%;
+      top: 35%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.78);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 20px;
+  font-size: 16px;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10001;
+  transition: opacity 0.28s ease, transform 0.28s ease;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+/* Ẩn hint khi hover vào nút toggle */
+#theme-toggle:hover ~ #theme-hint {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.2s ease;
+}
+
+#theme-hint.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* đổi màu cho dark mode để chữ mode rõ ràng */
+body.dark-mode #theme-hint {
+  background: rgba(255,255,255,0.92);
+  color: #111;
+}
+
+/* Khi màn hình nhỏ, đẩy hint lên trên nút để không bị tràn */
+@media (max-width: 900px) {
+  #theme-hint {
+    left: auto;
+    right: 6%;
+    top: 46%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+}
 
     /* Videos (page4) - iframe positioning */
     .overlay-container.Page4 .videos { position: absolute; inset: 0; cursor: url('assets/chi.png') 16 16, pointer; pointer-events: none; }
@@ -635,6 +690,10 @@ body.dark-mode #loading-screen { background: rgba(0, 5, 15, 1);
       <button id="theme-toggle" class="theme-toggle" aria-label="Chuyển đổi chế độ">
         <i id="theme-icon" class="fas fa-sun"></i>
       </button>
+<!-- Hint gợi ý đổi chế độ (bên cạnh nút toggle) -->
+<div id="theme-hint" aria-hidden="true" role="button">
+  <span class="hint-text"> <span class="hint-mode"><span id="hint-mode-label">Sáng</span></span> quá ư? Nhấn vào bên dưới đây nè</span>
+    </div>
     </div>
 
     <!-- ===== Page4 layers + embedded videos ===== -->
@@ -888,6 +947,96 @@ window.copyDiscord = function(element) {
   });
 };
 
+/* ======================
+   Hint cho nút đổi chế độ (Page3)
+   ====================== */
+const themeHint = document.getElementById('theme-hint');
+let hintTimeout;
+let hintShown = false; // chỉ hiện 1 lần khi vào Page3
+
+function checkThemeHintVisibility() {
+  const page3 = document.querySelector('.Page3');
+  if (!page3 || !themeHint) return;
+
+  const rect = page3.getBoundingClientRect();
+  const isVisible = rect.top < window.innerHeight * 0.8 && rect.bottom > window.innerHeight * 0.2;
+
+  if (isVisible && !hintShown) {
+    hintShown = true;
+
+    // Lấy chế độ hiện tại để chèn từ "Sáng" hoặc "Tối"
+    const isDark = document.body.classList.contains('dark-mode');
+    themeHint.textContent = (isDark ? 'Tối quá ư? Nhấn vào bên dưới đây nè' : 'Sáng quá ư? Nhấn vào bên dưới đây nè');
+
+    themeHint.classList.add('show');
+
+    clearTimeout(hintTimeout);
+    hintTimeout = setTimeout(() => {
+      themeHint.classList.remove('show');
+    }, 7000);
+  }
+}
+
+window.addEventListener('scroll', checkThemeHintVisibility);
+/* Theme hint — chỉ xuất hiện đúng 1 lần */
+(function() {
+  const page3 = document.querySelector('.overlay-container.Page3');
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeHint = document.getElementById('theme-hint');
+  const hintText = document.getElementById('theme-hint-text');
+  if (!page3 || !themeToggle || !themeHint || !hintText) return;
+
+  let hideTimer = null;
+  let hasShown = false; // chỉ hiện 1 lần duy nhất
+
+  function updateHintText() {
+    const isDark = document.body.classList.contains('dark-mode');
+    hintText.textContent = isDark
+      ? 'Tối quá ư? Nhấn vào bên dưới đây nè'
+      : 'Sáng quá ư? Nhấn vào bên dưới đây nè';
+  }
+
+  function showHintOnce() {
+    if (hasShown) return; // nếu đã hiện rồi thì bỏ qua
+    hasShown = true;
+    updateHintText();
+    themeHint.classList.add('show');
+    themeHint.setAttribute('aria-hidden', 'false');
+
+    hideTimer = setTimeout(() => {
+      themeHint.classList.remove('show');
+      themeHint.setAttribute('aria-hidden', 'true');
+      hideTimer = null;
+    }, 7000);
+  }
+
+  // Click hint = click toggle, rồi ẩn hẳn luôn
+  themeHint.addEventListener('click', (e) => {
+    e.stopPropagation();
+    themeToggle.click();
+    if (hideTimer) clearTimeout(hideTimer);
+    themeHint.classList.remove('show');
+    themeHint.setAttribute('aria-hidden', 'true');
+    hasShown = true; // đảm bảo không bao giờ hiện lại
+  });
+
+  // cập nhật nội dung khi toggle thay đổi
+  themeToggle.addEventListener('click', () => {
+    setTimeout(updateHintText, 40);
+  });
+
+  // Observer chỉ kích hoạt lần đầu
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !hasShown) {
+        showHintOnce();
+      }
+    });
+  }, { threshold: 0.4 });
+
+  io.observe(page3);
+  updateHintText();
+})();
 
     /* ======================
        Parallax (desktop only)
@@ -1132,7 +1281,7 @@ audioTrigger.addEventListener("click", (e) => {
 // Hiển thị hint tạm thời 5s
 function showAudioHint() {
   audioHint.classList.add("show");
-  setTimeout(() => audioHint.classList.remove("show"), 5000);
+  setTimeout(() => audioHint.classList.remove("show"), 7000);
 }
 
 // Khi mở truyện, show hint
