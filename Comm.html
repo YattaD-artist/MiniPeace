@@ -524,7 +524,7 @@ body.overlay-open .floating-icons {
 </head>
 <body>
 
-  <a href="index.html" class="back-btn" title="Quay lại trang chủ"></a>
+  <button class="back-btn" title="Quay lại"></button>
   
 <div class="content">
   <!-- ảnh chính -->
@@ -1041,6 +1041,24 @@ window.addEventListener('load', () => {
     preload.src = img.dataset.full;
   });
 });
+
+/* ============================================================
+   🔙 Nút Back hoạt động như nút "Quay lại" của trình duyệt
+============================================================ */
+const backBtnEl = document.querySelector('.back-btn');
+if (backBtnEl) {
+  backBtnEl.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (window.history.length > 1) {
+      // Có lịch sử → quay lại trang trước
+      window.history.back();
+    } else {
+      // Không có lịch sử (VD: truy cập trực tiếp) → về trang chủ thủ công
+      window.location.href = 'index.html';
+    }
+  });
+}
+
 </script>
 
 </body>
