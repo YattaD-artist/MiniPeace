@@ -287,6 +287,14 @@ body.dark-mode #theme-hint {
   color: #111;
 }
 
+/* Khi đã tắt hint vĩnh viễn bằng JS */
+#theme-hint.hint-disabled {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  animation: none !important;
+}
+
 /* Khi màn hình nhỏ, đẩy hint lên trên nút để không bị tràn */
 @media (max-width: 900px) {
   #theme-hint {
@@ -1434,6 +1442,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("load", hideLoading);
 });
+
+/* Ẩn hint vĩnh viễn sau khi đổi chế độ */
+(function() {
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeHint = document.getElementById('theme-hint');
+  if (!themeToggle || !themeHint) return;
+
+  // Gắn sự kiện khi đổi chế độ
+  themeToggle.addEventListener('click', () => {
+    // Ẩn hint và tắt animation luôn
+    themeHint.style.opacity = '0';
+    themeHint.style.pointerEvents = 'none';
+    themeHint.style.animation = 'none';
+    themeHint.style.visibility = 'hidden';
+
+    // Thêm class "hint-disabled" để ngăn CSS làm hiện lại
+    themeHint.classList.add('hint-disabled');
+  });
+})();
 
   </script>
 </body>
